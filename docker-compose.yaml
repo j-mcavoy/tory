@@ -1,0 +1,19 @@
+services:
+  webserver:
+    depends_on:
+      - db
+    environment:
+      MIX_ENV: dev
+    image: elixir
+    build: webserver
+    ports:
+      - "4000:4000"
+  db:
+    build: db
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+networks:
+  default:
+    name: tory
