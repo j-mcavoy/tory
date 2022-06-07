@@ -1,0 +1,31 @@
+<h1>Show distributor</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.distributor_show_path(@socket, :show, @distributor)}>
+    <.live_component
+      module={ToryWeb.DistributorLive.FormComponent}
+      id={@distributor.id}
+      title={@page_title}
+      action={@live_action}
+      distributor={@distributor}
+      return_to={Routes.distributor_show_path(@socket, :show, @distributor)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @distributor.name %>
+  </li>
+
+  <li>
+    <strong>Website:</strong>
+    <%= @distributor.website %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.distributor_show_path(@socket, :edit, @distributor), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.distributor_index_path(@socket, :index) %></span>

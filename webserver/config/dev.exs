@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :tory, Tory.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "password",
   hostname: "localhost",
   database: "tory_dev",
   stacktrace: true,
@@ -19,11 +19,11 @@ config :tory, Tory.Repo,
 config :tory, ToryWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {0, 0, 0, 0}, port: 4000],
+  http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "cgJxDG3cxaiWhliyEG/Kd2VRZrHprjw631IBmy/EzjWQlVggBLpCY41gczzMOVNJ",
+  secret_key_base: "fYuU0UGMr58UaiI9T26pxwU8n2Xp1Yq5whjqPWtqM5KfsmkPlijDw46grpPWz3qT",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}

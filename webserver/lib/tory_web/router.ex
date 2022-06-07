@@ -2,22 +2,46 @@ defmodule ToryWeb.Router do
   use ToryWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, {ToryWeb.LayoutView, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, {ToryWeb.LayoutView, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/", ToryWeb do
-    pipe_through :browser
+    pipe_through(:browser)
 
-    get "/", PageController, :index
+    get("/", PageController, :index)
+
+    live("/part", PartLive.Index, :index)
+    live("/part/new", PartLive.Index, :new)
+    live("/part/:id/edit", PartLive.Index, :edit)
+    live("/part/:id", PartLive.Show, :show)
+    live("/part/:id/show/edit", PartLive.Show, :edit)
+
+    live("/locations", LocationLive.Index, :index)
+    live("/locations/new", LocationLive.Index, :new)
+    live("/locations/:id/edit", LocationLive.Index, :edit)
+    live("/locations/:id", LocationLive.Show, :show)
+    live("/locations/:id/show/edit", LocationLive.Show, :edit)
+
+    live("/manufacturers", ManufacturerLive.Index, :index)
+    live("/manufacturers/new", ManufacturerLive.Index, :new)
+    live("/manufacturers/:id/edit", ManufacturerLive.Index, :edit)
+    live("/manufacturers/:id", ManufacturerLive.Show, :show)
+    live("/manufacturers/:id/show/edit", ManufacturerLive.Show, :edit)
+
+    live("/parameters", ParameterLive.Index, :index)
+    live("/parameters/new", ParameterLive.Index, :new)
+    live("/parameters/:id/edit", ParameterLive.Index, :edit)
+    live("/parameters/:id", ParameterLive.Show, :show)
+    live("/parameters/:id/show/edit", ParameterLive.Show, :edit)
   end
 
   # Other scopes may use custom stacks.
@@ -36,9 +60,9 @@ defmodule ToryWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      live_dashboard "/dashboard", metrics: ToryWeb.Telemetry
+      live_dashboard("/dashboard", metrics: ToryWeb.Telemetry)
     end
   end
 
@@ -48,9 +72,9 @@ defmodule ToryWeb.Router do
   # node running the Phoenix server.
   if Mix.env() == :dev do
     scope "/dev" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
+      forward("/mailbox", Plug.Swoosh.MailboxPreview)
     end
   end
 end

@@ -1,0 +1,41 @@
+<h1>Listing Manufacturers</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.manufacturer_index_path(@socket, :index)}>
+    <.live_component
+      module={ToryWeb.ManufacturerLive.FormComponent}
+      id={@manufacturer.id || :new}
+      title={@page_title}
+      action={@live_action}
+      manufacturer={@manufacturer}
+      return_to={Routes.manufacturer_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Website</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="manufacturers">
+    <%= for manufacturer <- @manufacturers do %>
+      <tr id={"manufacturer-#{manufacturer.id}"}>
+        <td><%= manufacturer.name %></td>
+        <td><%= manufacturer.website %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.manufacturer_show_path(@socket, :show, manufacturer) %></span>
+          <span><%= live_patch "Edit", to: Routes.manufacturer_index_path(@socket, :edit, manufacturer) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: manufacturer.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Manufacturer", to: Routes.manufacturer_index_path(@socket, :new) %></span>

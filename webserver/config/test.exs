@@ -17,7 +17,7 @@ config :tory, Tory.Repo,
 # you can enable the server option below.
 config :tory, ToryWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "14VYECtlez9OgzgAwOK9iejJA+LRUT6lZtGqysfqxgq7TnCGLC73OlU2UGYqfWdE",
+  secret_key_base: "Beilvp7ndsj4I5D95/icJDSPhHFwwLIT8R34AAmaNrwU/tIcktC8u71jz6btOZ93",
   server: false
 
 # In test we don't send emails.
