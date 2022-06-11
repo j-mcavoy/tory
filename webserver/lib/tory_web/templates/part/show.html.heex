@@ -1,0 +1,28 @@
+<h1>Show Part</h1>
+
+<ul>
+
+  <li>
+    <strong>Mpn:</strong>
+    <%= @part.mpn %>
+  </li>
+
+  <li>
+    <strong>Datasheet:</strong>
+    <%= @part.datasheet %>
+  </li>
+
+  <li>
+    <strong>Barcode:</strong>
+    <%= @part.barcode %>
+  </li>
+
+  <li>
+    <strong>Octopart uid:</strong>
+    <%= @part.octopart_uid %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.part_path(@conn, :edit, @part) %></span> |
+<span><%= link "Back", to: Routes.part_path(@conn, :index) %></span>

@@ -1,0 +1,32 @@
+<h1>Listing Parts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Mpn</th>
+      <th>Datasheet</th>
+      <th>Barcode</th>
+      <th>Octopart uid</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for part <- @parts do %>
+    <tr>
+      <td><%= part.mpn %></td>
+      <td><%= part.datasheet %></td>
+      <td><%= part.barcode %></td>
+      <td><%= part.octopart_uid %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.part_path(@conn, :show, part) %></span>
+        <span><%= link "Edit", to: Routes.part_path(@conn, :edit, part) %></span>
+        <span><%= link "Delete", to: Routes.part_path(@conn, :delete, part), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Part", to: Routes.part_path(@conn, :new) %></span>
