@@ -25,12 +25,12 @@ alias Tory.Inventory.{
   },
   %Part{
     id: 0,
-    barcode: nil,
+    barcode: "1N914-T50A",
     datasheet:
       "https://rocelec.widen.net/view/pdf/bhc41r7lwc/ONSM-S-A0003539415-1.pdf?t.download=true&u=5oefqw",
     description: "DIODE GEN PURP 100V 200MA DO35",
     mpn: "1N914-T50A",
-    octopart_id: nil,
+    octopart_no: nil,
     price_usd: 13,
     manufacturer_id: 0
   },
