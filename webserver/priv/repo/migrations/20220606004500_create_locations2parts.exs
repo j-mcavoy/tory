@@ -9,5 +9,9 @@ defmodule Tory.Repo.Migrations.CreateLocation2part do
 
       timestamps()
     end
+
+    create(index(:locations2parts, [:part_id]))
+    create(index(:locations2parts, [:location_id]))
+    create(unique_index(:locations2parts, [:part_id, :location_id]))
   end
 end

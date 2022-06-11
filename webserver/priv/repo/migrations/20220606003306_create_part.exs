@@ -7,7 +7,7 @@ defmodule Tory.Repo.Migrations.CreateParts do
       add(:description, :string)
       add(:datasheet, :string)
       add(:barcode, :string)
-      add(:octopart_id, :string)
+      add(:octopart_no, :string)
       add(:price_usd, :integer)
       add(:manufacturer_id, references(:manufacturers))
 
