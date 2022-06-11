@@ -137,8 +137,8 @@ defmodule Tory.Inventory do
   """
   def get_part!(id), do: Repo.get!(Part, id)
 
-  def get_part_inventory!(id) do
-    Repo.get!(Part, id) |> Repo.preload(inventories: :location)
+  def get_part_details!(id) do
+    Repo.get!(Part, id) |> Repo.preload(inventories: :location) |> Repo.preload(:parameters)
   end
 
   @doc """

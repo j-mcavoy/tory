@@ -20,6 +20,12 @@ alias Tory.Meta.{Parameter, PartParameter}
 }
 |> Repo.insert!()
 
+%PartParameter{
+  part_id: 0,
+  parameter_id: 0
+}
+|> Repo.insert!()
+
 %Location{
   id: 0,
   name: "Diodes"

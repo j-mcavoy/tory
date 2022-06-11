@@ -21,7 +21,14 @@
     <strong>Octopart uid:</strong>
     <%= @part.octopart_uuid %>
   </li>
-  <br>
+  <li>
+    <strong>Parameters</strong>
+    <ul>
+    <%= for p <- @part.parameters do %>
+      <li><%= p.name %><%= if p.value != nil, do: ": #{p.value}" %></li>
+  <% end %>
+    </ul>
+  </li>
   <article>
     <h3>Inventory</h3>
     <table>

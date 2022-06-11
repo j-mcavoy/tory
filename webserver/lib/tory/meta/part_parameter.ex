@@ -7,7 +7,7 @@ defmodule Tory.Meta.PartParameter do
 
   schema "partparameters" do
     belongs_to :part, Part
-    belongs_to :parameter, PartParameter
+    belongs_to :parameter, Parameter
 
     timestamps()
   end
