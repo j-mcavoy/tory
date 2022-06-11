@@ -25,6 +25,15 @@
     <%= @location.description %>
   </li>
 
+  <li>
+    <strong>Parts</strong>
+    <ul>
+    <%= for p <- @location.parts do %>
+      <li><a href={"/parts/#{p.id}"} ><%= p.mpn %></a></li>
+    <% end  %>
+    </ul>
+  </li>
+
 </ul>
 
 <span><%= live_patch "Edit", to: Routes.location_show_path(@socket, :edit, @location), class: "button" %></span> |

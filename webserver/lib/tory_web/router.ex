@@ -22,11 +22,11 @@ defmodule ToryWeb.Router do
 
     get("/", PageController, :index)
 
-    live("/part", PartLive.Index, :index)
-    live("/part/new", PartLive.Index, :new)
-    live("/part/:id/edit", PartLive.Index, :edit)
-    live("/part/:id", PartLive.Show, :show)
-    live("/part/:id/show/edit", PartLive.Show, :edit)
+    live("/parts", PartLive.Index, :index)
+    live("/parts/new", PartLive.Index, :new)
+    live("/parts/:id/edit", PartLive.Index, :edit)
+    live("/parts/:id", PartLive.Show, :show)
+    live("/parts/:id/show/edit", PartLive.Show, :edit)
 
     live("/locations", LocationLive.Index, :index)
     live("/locations/new", LocationLive.Index, :new)

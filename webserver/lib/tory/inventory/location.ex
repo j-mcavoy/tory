@@ -1,12 +1,13 @@
 defmodule Tory.Inventory.Location do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Tory.Inventory.Locations2Parts
 
   schema "locations" do
     field(:description, :string)
     field(:name, :string)
 
-    many_to_many(:part, Tory.Inventory.Part, join_through: :locations2parts)
+    many_to_many(:parts, Tory.Inventory.Part, join_through: Locations2Parts)
 
     timestamps()
   end

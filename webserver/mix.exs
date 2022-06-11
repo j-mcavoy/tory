@@ -33,6 +33,8 @@ defmodule Tory.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:octopart_api, "~> 0.1.0"},
+      {:barlix, "~> 0.6"},
       {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.6.9"},
       {:phoenix_ecto, "~> 4.4"},

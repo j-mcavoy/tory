@@ -2,20 +2,16 @@ defmodule ToryWeb.LocationLive.FormComponent do
   use ToryWeb, :live_component
 
   alias Tory.Inventory
+  alias Tory.Repo
 
   @impl true
   def update(%{location: location} = assigns, socket) do
     changeset = Inventory.change_location(location)
     import Ecto.Query, only: [from: 2]
 
-    query = from(mf in "manufacturers", select: [mf.id, mf.name])
-
-    manufacturer = Repo.all(query, prefix: :inventory)
-
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(manufacturer: manufacturer)
      |> assign(:changeset, changeset)}
   end
 

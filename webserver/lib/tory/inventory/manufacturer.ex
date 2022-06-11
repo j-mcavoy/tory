@@ -8,7 +8,7 @@ defmodule Tory.Inventory.Manufacturer do
     field(:name, :string)
     field(:website, :string)
 
-    many_to_many(:part, Part, join_through: :parts2manufacturers)
+    has_many(:part, Part)
 
     timestamps()
   end

@@ -70,7 +70,10 @@ defmodule ToryWeb.ManufacturerLiveTest do
     test "deletes manufacturer in listing", %{conn: conn, manufacturer: manufacturer} do
       {:ok, index_live, _html} = live(conn, Routes.manufacturer_index_path(conn, :index))
 
-      assert index_live |> element("#manufacturer-#{manufacturer.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#manufacturer-#{manufacturer.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#manufacturer-#{manufacturer.id}")
     end
   end
@@ -79,14 +82,16 @@ defmodule ToryWeb.ManufacturerLiveTest do
     setup [:create_manufacturer]
 
     test "displays manufacturer", %{conn: conn, manufacturer: manufacturer} do
-      {:ok, _show_live, html} = live(conn, Routes.manufacturer_show_path(conn, :show, manufacturer))
+      {:ok, _show_live, html} =
+        live(conn, Routes.manufacturer_show_path(conn, :show, manufacturer))
 
       assert html =~ "Show Manufacturer"
       assert html =~ manufacturer.name
     end
 
     test "updates manufacturer within modal", %{conn: conn, manufacturer: manufacturer} do
-      {:ok, show_live, _html} = live(conn, Routes.manufacturer_show_path(conn, :show, manufacturer))
+      {:ok, show_live, _html} =
+        live(conn, Routes.manufacturer_show_path(conn, :show, manufacturer))
 
       assert show_live |> element("a", "Edit") |> render_click() =~
                "Edit Manufacturer"

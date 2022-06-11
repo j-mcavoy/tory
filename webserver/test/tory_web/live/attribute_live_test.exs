@@ -5,7 +5,11 @@ defmodule ToryWeb.AttributeLiveTest do
   import Tory.InventoryFixtures
 
   @create_attrs %{name: "some name", unit: "some unit", value: "some value"}
-  @update_attrs %{name: "some updated name", unit: "some updated unit", value: "some updated value"}
+  @update_attrs %{
+    name: "some updated name",
+    unit: "some updated unit",
+    value: "some updated value"
+  }
   @invalid_attrs %{name: nil, unit: nil, value: nil}
 
   defp create_attribute(_) do

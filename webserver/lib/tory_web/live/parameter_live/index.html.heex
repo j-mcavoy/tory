@@ -1,14 +1,14 @@
-<h1>Listing Attributes</h1>
+<h1>Listing parameters</h1>
 
 <%= if @live_action in [:new, :edit] do %>
-  <.modal return_to={Routes.attribute_index_path(@socket, :index)}>
+  <.modal return_to={Routes.parameter_index_path(@socket, :index)}>
     <.live_component
-      module={ToryWeb.AttributeLive.FormComponent}
-      id={@attribute.id || :new}
+      module={ToryWeb.ParameterLive.FormComponent}
+      id={@parameter.id || :new}
       title={@page_title}
       action={@live_action}
-      attribute={@attribute}
-      return_to={Routes.attribute_index_path(@socket, :index)}
+      parameter={@parameter}
+      return_to={Routes.parameter_index_path(@socket, :index)}
     />
   </.modal>
 <% end %>
@@ -23,21 +23,21 @@
       <th></th>
     </tr>
   </thead>
-  <tbody id="attributes">
-    <%= for attribute <- @attributes do %>
-      <tr id={"attribute-#{attribute.id}"}>
-        <td><%= attribute.name %></td>
-        <td><%= attribute.value %></td>
-        <td><%= attribute.unit %></td>
+  <tbody id="parameters">
+    <%= for parameter <- @parameters do %>
+      <tr id={"parameter-#{parameter.id}"}>
+        <td><%= parameter.name %></td>
+        <td><%= parameter.value %></td>
+        <td><%= parameter.unit %></td>
 
         <td>
-          <span><%= live_redirect "Show", to: Routes.attribute_show_path(@socket, :show, attribute) %></span>
-          <span><%= live_patch "Edit", to: Routes.attribute_index_path(@socket, :edit, attribute) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: attribute.id, data: [confirm: "Are you sure?"] %></span>
+          <span><%= live_redirect "Show", to: Routes.parameter_show_path(@socket, :show, parameter) %></span>
+          <span><%= live_patch "Edit", to: Routes.parameter_index_path(@socket, :edit, parameter) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: parameter.id, data: [confirm: "Are you sure?"] %></span>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<span><%= live_patch "New Attribute", to: Routes.attribute_index_path(@socket, :new) %></span>
+<span><%= live_patch "New parameter", to: Routes.parameter_index_path(@socket, :new) %></span>

@@ -4,9 +4,30 @@ defmodule ToryWeb.PartLiveTest do
   import Phoenix.LiveViewTest
   import Tory.InventoryFixtures
 
-  @create_attrs %{barcode: "some barcode", datasheet: "some datasheet", description: "some description", mpn: "some mpn", octopart_id: "some octopart_id", price_usd: 42}
-  @update_attrs %{barcode: "some updated barcode", datasheet: "some updated datasheet", description: "some updated description", mpn: "some updated mpn", octopart_id: "some updated octopart_id", price_usd: 43}
-  @invalid_attrs %{barcode: nil, datasheet: nil, description: nil, mpn: nil, octopart_id: nil, price_usd: nil}
+  @create_attrs %{
+    barcode: "some barcode",
+    datasheet: "some datasheet",
+    description: "some description",
+    mpn: "some mpn",
+    octopart_id: "some octopart_id",
+    price_usd: 42
+  }
+  @update_attrs %{
+    barcode: "some updated barcode",
+    datasheet: "some updated datasheet",
+    description: "some updated description",
+    mpn: "some updated mpn",
+    octopart_id: "some updated octopart_id",
+    price_usd: 43
+  }
+  @invalid_attrs %{
+    barcode: nil,
+    datasheet: nil,
+    description: nil,
+    mpn: nil,
+    octopart_id: nil,
+    price_usd: nil
+  }
 
   defp create_part(_) do
     part = part_fixture()

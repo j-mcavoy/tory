@@ -20,8 +20,10 @@
       <th>Manufacturer</th>
       <th>Description</th>
       <th>Datasheet</th>
+      <th>Parameters</th>
       <th>Barcode</th>
       <th>Octopart</th>
+      <th>Distributors</th>
       <th>Price usd</th>
 
       <th></th>
@@ -31,13 +33,18 @@
     <%= for part <- @part_collection do %>
       <tr id={"part-#{part.id}"}>
         <td><%= part.mpn %></td>
-        <td><%= part.manufacturer %></td>
+        <td><%= part.manufacturer.name %></td>
         <td><%= part.description %></td>
-        <td><%= part.datasheet %></td>
+        <td><a href={part.datasheet}>Datasheet</a></td>
+        <td>
+        <%= for param <- part.parameters do %>
+          <%= param.name %>: <%= param.value %>
+        <% end %>
+        </td>
         <td><%= part.barcode %></td>
-        <td><%= part.octopart_id %></td>
-        <td><%= part.price_usd %></td>
-
+        <td><%= part.octopart_no %></td>
+        <td><%= list_distributors(part) %></td>
+        <td>$<%= part.price_usd / 100 %></td>
         <td>
           <span><%= live_redirect "Show", to: Routes.part_show_path(@socket, :show, part) %></span>
           <span><%= live_patch "Edit", to: Routes.part_index_path(@socket, :edit, part) %></span>

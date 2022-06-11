@@ -43,4 +43,8 @@ defmodule ToryWeb.PartLive.Index do
   defp list_part do
     Inventory.list_part()
   end
+
+  def list_distributors(part) do
+    Enum.map(part.distributors, & &1.name) |> Enum.intersperse(", ") |> Enum.join()
+  end
 end

@@ -8,8 +8,7 @@ defmodule Tory.Inventory.Parameter do
     field(:name, :string)
     field(:unit, :string)
     field(:value, :string)
-
-    many_to_many(:part_id, Part, join_through: :parts2parameters)
+    many_to_many(:parts, Part, join_through: :parts2_parameters)
 
     timestamps()
   end

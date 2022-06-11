@@ -10,10 +10,13 @@ defmodule ToryWeb.PartLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
+    part = Inventory.get_part!(id)
+
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:part, Inventory.get_part!(id))}
+     |> assign(:part, part)
+     |> assign(:barcode_generated, Inventory.generate_barcode(part))}
   end
 
   defp page_title(:show), do: "Show Part"

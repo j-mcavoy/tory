@@ -13,7 +13,7 @@ defmodule ToryWeb.LocationLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:location, Inventory.get_location!(id))}
+     |> assign(:location, Inventory.get_location_with_parts!(id))}
   end
 
   defp page_title(:show), do: "Show Location"

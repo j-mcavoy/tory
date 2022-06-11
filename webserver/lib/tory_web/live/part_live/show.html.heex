@@ -27,22 +27,30 @@
 
   <li>
     <strong>Datasheet:</strong>
-    <%= @part.datasheet %>
+    <a href={@part.datasheet}><%= @part.datasheet %></a>
   </li>
 
   <li>
+    <strong>Parameters</strong>
+    <%= for param <- @part.parameters do %>
+      <%= param.name %>: <%= param.value %>
+    <% end %>
+  </li>
+
+
+  <li>
     <strong>Barcode:</strong>
-    <%= @part.barcode %>
+    <%= @barcode_generated %>
   </li>
 
   <li>
     <strong>Octopart:</strong>
-    <%= @part.octopart_id %>
+    <%= @part.octopart_no %>
   </li>
 
   <li>
     <strong>Price usd:</strong>
-    <%= @part.price_usd %>
+    $<%= @part.price_usd / 100 %>
   </li>
 
 </ul>

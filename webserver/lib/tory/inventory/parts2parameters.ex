@@ -13,7 +13,9 @@ defmodule Tory.Inventory.Parts2Parameters do
   @doc false
   def changeset(parts2parameters, attrs) do
     parts2parameters
-    |> cast(attrs, [:part, :parameter])
+    |> cast(attrs, [])
+    |> cast_assoc(:part)
+    |> cast_assoc(:parameter)
     |> validate_required([:part, :parameter])
   end
 end
