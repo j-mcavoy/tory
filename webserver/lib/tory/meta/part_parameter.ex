@@ -2,10 +2,12 @@ defmodule Tory.Meta.PartParameter do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "partparameters" do
+  alias Tory.Inventory.Part
+  alias Tory.Meta.Parameter
 
-    field :part_id, :id
-    field :parameter_id, :id
+  schema "partparameters" do
+    belongs_to :part, Part
+    belongs_to :parameter, PartParameter
 
     timestamps()
   end

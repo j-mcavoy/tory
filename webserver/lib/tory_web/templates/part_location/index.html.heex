@@ -1,0 +1,26 @@
+<h1>Listing Partlocations</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Count</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for part_location <- @partlocations do %>
+    <tr>
+      <td><%= part_location.count %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.part_location_path(@conn, :show, part_location) %></span>
+        <span><%= link "Edit", to: Routes.part_location_path(@conn, :edit, part_location) %></span>
+        <span><%= link "Delete", to: Routes.part_location_path(@conn, :delete, part_location), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Part location", to: Routes.part_location_path(@conn, :new) %></span>

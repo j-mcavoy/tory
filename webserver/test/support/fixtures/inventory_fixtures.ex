@@ -50,4 +50,18 @@ defmodule Tory.InventoryFixtures do
 
     part
   end
+
+  @doc """
+  Generate a part_location.
+  """
+  def part_location_fixture(attrs \\ %{}) do
+    {:ok, part_location} =
+      attrs
+      |> Enum.into(%{
+        count: 42
+      })
+      |> Tory.Inventory.create_part_location()
+
+    part_location
+  end
 end

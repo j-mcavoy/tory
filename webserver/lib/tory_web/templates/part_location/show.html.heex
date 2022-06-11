@@ -1,0 +1,13 @@
+<h1>Show Part location</h1>
+
+<ul>
+
+  <li>
+    <strong>Count:</strong>
+    <%= @part_location.count %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.part_location_path(@conn, :edit, @part_location) %></span> |
+<span><%= link "Back", to: Routes.part_location_path(@conn, :index) %></span>

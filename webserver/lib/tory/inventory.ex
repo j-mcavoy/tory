@@ -197,4 +197,100 @@ defmodule Tory.Inventory do
   def change_part(%Part{} = part, attrs \\ %{}) do
     Part.changeset(part, attrs)
   end
+
+  alias Tory.Inventory.PartLocation
+
+  @doc """
+  Returns the list of partlocations.
+
+  ## Examples
+
+      iex> list_partlocations()
+      [%PartLocation{}, ...]
+
+  """
+  def list_partlocations do
+    Repo.all(PartLocation)
+  end
+
+  @doc """
+  Gets a single part_location.
+
+  Raises `Ecto.NoResultsError` if the Part location does not exist.
+
+  ## Examples
+
+      iex> get_part_location!(123)
+      %PartLocation{}
+
+      iex> get_part_location!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_part_location!(id), do: Repo.get!(PartLocation, id)
+
+  @doc """
+  Creates a part_location.
+
+  ## Examples
+
+      iex> create_part_location(%{field: value})
+      {:ok, %PartLocation{}}
+
+      iex> create_part_location(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_part_location(attrs \\ %{}) do
+    %PartLocation{}
+    |> PartLocation.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a part_location.
+
+  ## Examples
+
+      iex> update_part_location(part_location, %{field: new_value})
+      {:ok, %PartLocation{}}
+
+      iex> update_part_location(part_location, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_part_location(%PartLocation{} = part_location, attrs) do
+    part_location
+    |> PartLocation.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a part_location.
+
+  ## Examples
+
+      iex> delete_part_location(part_location)
+      {:ok, %PartLocation{}}
+
+      iex> delete_part_location(part_location)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_part_location(%PartLocation{} = part_location) do
+    Repo.delete(part_location)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking part_location changes.
+
+  ## Examples
+
+      iex> change_part_location(part_location)
+      %Ecto.Changeset{data: %PartLocation{}}
+
+  """
+  def change_part_location(%PartLocation{} = part_location, attrs \\ %{}) do
+    PartLocation.changeset(part_location, attrs)
+  end
 end

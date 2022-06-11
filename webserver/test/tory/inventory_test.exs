@@ -118,4 +118,58 @@ defmodule Tory.InventoryTest do
       assert %Ecto.Changeset{} = Inventory.change_part(part)
     end
   end
+
+  describe "partlocations" do
+    alias Tory.Inventory.PartLocation
+
+    import Tory.InventoryFixtures
+
+    @invalid_attrs %{count: nil}
+
+    test "list_partlocations/0 returns all partlocations" do
+      part_location = part_location_fixture()
+      assert Inventory.list_partlocations() == [part_location]
+    end
+
+    test "get_part_location!/1 returns the part_location with given id" do
+      part_location = part_location_fixture()
+      assert Inventory.get_part_location!(part_location.id) == part_location
+    end
+
+    test "create_part_location/1 with valid data creates a part_location" do
+      valid_attrs = %{count: 42}
+
+      assert {:ok, %PartLocation{} = part_location} = Inventory.create_part_location(valid_attrs)
+      assert part_location.count == 42
+    end
+
+    test "create_part_location/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Inventory.create_part_location(@invalid_attrs)
+    end
+
+    test "update_part_location/2 with valid data updates the part_location" do
+      part_location = part_location_fixture()
+      update_attrs = %{count: 43}
+
+      assert {:ok, %PartLocation{} = part_location} = Inventory.update_part_location(part_location, update_attrs)
+      assert part_location.count == 43
+    end
+
+    test "update_part_location/2 with invalid data returns error changeset" do
+      part_location = part_location_fixture()
+      assert {:error, %Ecto.Changeset{}} = Inventory.update_part_location(part_location, @invalid_attrs)
+      assert part_location == Inventory.get_part_location!(part_location.id)
+    end
+
+    test "delete_part_location/1 deletes the part_location" do
+      part_location = part_location_fixture()
+      assert {:ok, %PartLocation{}} = Inventory.delete_part_location(part_location)
+      assert_raise Ecto.NoResultsError, fn -> Inventory.get_part_location!(part_location.id) end
+    end
+
+    test "change_part_location/1 returns a part_location changeset" do
+      part_location = part_location_fixture()
+      assert %Ecto.Changeset{} = Inventory.change_part_location(part_location)
+    end
+  end
 end
