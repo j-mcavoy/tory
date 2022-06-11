@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :tory, Tory.Repo,
   username: "postgres",
-  password: "password",
+  password: "postgres",
   hostname: "localhost",
   database: "tory_dev",
   stacktrace: true,

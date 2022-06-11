@@ -7,7 +7,7 @@ defmodule ToryWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_tory_key",
-    signing_salt: "Xlmx7+zx"
+    signing_salt: "ZCY2SDOa"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

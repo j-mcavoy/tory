@@ -15,7 +15,7 @@ config :tory, ToryWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: ToryWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Tory.PubSub,
-  live_view: [signing_salt: "vHcmEDk+"]
+  live_view: [signing_salt: "QFOk4XKZ"]
 
 # Configures the mailer
 #

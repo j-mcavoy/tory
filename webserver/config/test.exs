@@ -1,8 +1,5 @@
 import Config
 
-# Only in tests, remove the complexity from the password hashing algorithm
-config :bcrypt_elixir, :log_rounds, 1
-
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
@@ -20,7 +17,7 @@ config :tory, Tory.Repo,
 # you can enable the server option below.
 config :tory, ToryWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "Beilvp7ndsj4I5D95/icJDSPhHFwwLIT8R34AAmaNrwU/tIcktC8u71jz6btOZ93",
+  secret_key_base: "gw5np0K/xsyRlC2ozlQ6/+D4cNuNn6nwOdpMfqLFWCE8tAb26TdPBYGyDO7F5gDO",
   server: false
 
 # In test we don't send emails.
