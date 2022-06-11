@@ -12,6 +12,28 @@
     <%= @location.description %>
   </li>
 
+  <li>
+    <strong>Parts:</strong>
+    <ul>
+      <table>
+        <tr>
+        <th>Part</th>
+        <th>Count</th>
+        </tr>
+        <%= for i <- @location.inventories do %>
+          <tr>
+            <td>
+              <%= link i.part.mpn, to: Routes.part_path(@conn, :show, i.part) %>
+            </td>
+            <td>
+              <%= i.count %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </ul>
+  </li>
+
 </ul>
 
 <span><%= link "Edit", to: Routes.location_path(@conn, :edit, @location) %></span> |

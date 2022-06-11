@@ -1,5 +1,5 @@
 alias Tory.Repo
-alias Tory.Inventory.{Part, Location}
+alias Tory.Inventory.{Part, Location, Inventory}
 alias Tory.Meta.{Parameter, PartParameter}
 
 %Part{
@@ -20,21 +20,25 @@ alias Tory.Meta.{Parameter, PartParameter}
 }
 |> Repo.insert!()
 
+%Location{
+  id: 0,
+  name: "Diodes"
+}
+|> Repo.insert!()
+
+%Inventory{
+  location_id: 0,
+  part_id: 0,
+  count: 10
+}
+|> Repo.insert!()
+
 # [
 #  %Distributor{id: 0, name: "Digi-Key", website: "https://www.digikey.com/"},
 #  %Manufacturer{
 #    id: 0,
 #    name: "onsemi",
 #    website: "https://www.digikey.com/en/supplier-centers/onsemi"
-#  },
-#  %Location{
-#    id: 0,
-#    name: "Diodes"
-#  },
-#  %Locations2Parts{
-#    location_id: 0,
-#    part_id: 0,
-#    quantity: 10
 #  },
 #  %Parts2Distributors{
 #    part_id: 0,

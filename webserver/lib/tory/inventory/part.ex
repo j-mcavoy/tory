@@ -2,7 +2,7 @@ defmodule Tory.Inventory.Part do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Tory.Inventory.{Location, PartLocation}
+  alias Tory.Inventory.{Location, Inventory}
 
   schema "parts" do
     field :barcode, :string
@@ -10,7 +10,7 @@ defmodule Tory.Inventory.Part do
     field :description, :string
     field :mpn, :string
     field :octopart_uuid, :string
-    many_to_many :locations, Location, join_through: PartLocation
+    has_many :inventories, Inventory
 
     timestamps()
   end

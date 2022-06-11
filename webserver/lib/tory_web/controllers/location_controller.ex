@@ -27,7 +27,7 @@ defmodule ToryWeb.LocationController do
   end
 
   def show(conn, %{"id" => id}) do
-    location = Inventory.get_location!(id)
+    location = Inventory.get_location_inventory!(id)
     render(conn, "show.html", location: location)
   end
 

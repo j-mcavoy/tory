@@ -21,6 +21,22 @@
     <strong>Octopart uid:</strong>
     <%= @part.octopart_uuid %>
   </li>
+  <br>
+  <article>
+    <h3>Inventory</h3>
+    <table>
+      <tr>
+        <th>Location</th>
+        <th>Count</th>
+      </tr>
+      <%= for i <- @part.inventories do%>
+        <tr>
+          <td><%= link i.location.name, to: Routes.location_path @conn , :show, i.location %></td>
+          <td><%= i.count %></td>
+        </tr>
+      <% end %>
+    </table>
+  </article>
 
 </ul>
 

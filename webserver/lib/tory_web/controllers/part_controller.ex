@@ -27,7 +27,7 @@ defmodule ToryWeb.PartController do
   end
 
   def show(conn, %{"id" => id}) do
-    part = Inventory.get_part!(id)
+    part = Inventory.get_part_inventory!(id)
     render(conn, "show.html", part: part)
   end
 

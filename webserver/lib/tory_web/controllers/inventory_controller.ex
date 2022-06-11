@@ -1,16 +1,16 @@
-defmodule ToryWeb.PartLocationController do
+defmodule ToryWeb.InventoryController do
   use ToryWeb, :controller
 
   alias Tory.Inventory
-  alias Tory.Inventory.PartLocation
+  alias Tory.Inventory.Inventory
 
   def index(conn, _params) do
-    partlocations = Inventory.list_partlocations()
-    render(conn, "index.html", partlocations: partlocations)
+    inventories = Inventory.list_inventories()
+    render(conn, "index.html", inventories: inventories)
   end
 
   def new(conn, _params) do
-    changeset = Inventory.change_part_location(%PartLocation{})
+    changeset = Inventory.change_part_location(%Inventory{})
     render(conn, "new.html", changeset: changeset)
   end
 

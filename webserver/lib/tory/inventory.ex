@@ -37,6 +37,10 @@ defmodule Tory.Inventory do
   """
   def get_location!(id), do: Repo.get!(Location, id)
 
+  def get_location_inventory!(id) do
+    Repo.get!(Location, id) |> Repo.preload(inventories: :part)
+  end
+
   @doc """
   Creates a location.
 
@@ -133,6 +137,10 @@ defmodule Tory.Inventory do
   """
   def get_part!(id), do: Repo.get!(Part, id)
 
+  def get_part_inventory!(id) do
+    Repo.get!(Part, id) |> Repo.preload(inventories: :location)
+  end
+
   @doc """
   Creates a part.
 
@@ -198,19 +206,19 @@ defmodule Tory.Inventory do
     Part.changeset(part, attrs)
   end
 
-  alias Tory.Inventory.PartLocation
+  alias Tory.Inventory.Inventory
 
   @doc """
-  Returns the list of partlocations.
+  Returns the list of inventories.
 
   ## Examples
 
-      iex> list_partlocations()
-      [%PartLocation{}, ...]
+      iex> list_inventories()
+      [%Inventory{}, ...]
 
   """
-  def list_partlocations do
-    Repo.all(PartLocation)
+  def list_inventories do
+    Repo.all(Inventory)
   end
 
   @doc """
@@ -221,13 +229,13 @@ defmodule Tory.Inventory do
   ## Examples
 
       iex> get_part_location!(123)
-      %PartLocation{}
+      %Inventory{}
 
       iex> get_part_location!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_part_location!(id), do: Repo.get!(PartLocation, id)
+  def get_part_location!(id), do: Repo.get!(Inventory, id)
 
   @doc """
   Creates a part_location.
@@ -235,15 +243,15 @@ defmodule Tory.Inventory do
   ## Examples
 
       iex> create_part_location(%{field: value})
-      {:ok, %PartLocation{}}
+      {:ok, %Inventory{}}
 
       iex> create_part_location(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
   def create_part_location(attrs \\ %{}) do
-    %PartLocation{}
-    |> PartLocation.changeset(attrs)
+    %Inventory{}
+    |> Inventory.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -253,15 +261,15 @@ defmodule Tory.Inventory do
   ## Examples
 
       iex> update_part_location(part_location, %{field: new_value})
-      {:ok, %PartLocation{}}
+      {:ok, %Inventory{}}
 
       iex> update_part_location(part_location, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_part_location(%PartLocation{} = part_location, attrs) do
+  def update_part_location(%Inventory{} = part_location, attrs) do
     part_location
-    |> PartLocation.changeset(attrs)
+    |> Inventory.changeset(attrs)
     |> Repo.update()
   end
 
@@ -271,13 +279,13 @@ defmodule Tory.Inventory do
   ## Examples
 
       iex> delete_part_location(part_location)
-      {:ok, %PartLocation{}}
+      {:ok, %Inventory{}}
 
       iex> delete_part_location(part_location)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_part_location(%PartLocation{} = part_location) do
+  def delete_part_location(%Inventory{} = part_location) do
     Repo.delete(part_location)
   end
 
@@ -287,10 +295,10 @@ defmodule Tory.Inventory do
   ## Examples
 
       iex> change_part_location(part_location)
-      %Ecto.Changeset{data: %PartLocation{}}
+      %Ecto.Changeset{data: %Inventory{}}
 
   """
-  def change_part_location(%PartLocation{} = part_location, attrs \\ %{}) do
-    PartLocation.changeset(part_location, attrs)
+  def change_part_location(%Inventory{} = part_location, attrs \\ %{}) do
+    Inventory.changeset(part_location, attrs)
   end
 end
