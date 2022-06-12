@@ -12,8 +12,8 @@ defmodule Tory.Inventory.Inventory do
   end
 
   @doc false
-  def changeset(part_location, attrs) do
-    part_location
+  def changeset(inventory, attrs) do
+    inventory
     |> cast(attrs, [:count])
     |> validate_required([:count])
   end

@@ -206,7 +206,7 @@ defmodule Tory.Inventory do
     Part.changeset(part, attrs)
   end
 
-  alias Tory.Inventory.Inventory
+  alias Tory.Inventory.Inventory, as: I
 
   @doc """
   Returns the list of inventories.
@@ -218,87 +218,87 @@ defmodule Tory.Inventory do
 
   """
   def list_inventories do
-    Repo.all(Inventory)
+    Repo.all(I)
   end
 
   @doc """
-  Gets a single part_location.
+  Gets a single inventory.
 
-  Raises `Ecto.NoResultsError` if the Part location does not exist.
+  Raises `Ecto.NoResultsError` if the Inventory does not exist.
 
   ## Examples
 
-      iex> get_part_location!(123)
+      iex> get_inventory!(123)
       %Inventory{}
 
-      iex> get_part_location!(456)
+      iex> get_inventory!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_part_location!(id), do: Repo.get!(Inventory, id)
+  def get_inventory!(id), do: Repo.get!(I, id)
 
   @doc """
-  Creates a part_location.
+  Creates a inventory.
 
   ## Examples
 
-      iex> create_part_location(%{field: value})
+      iex> create_inventory(%{field: value})
       {:ok, %Inventory{}}
 
-      iex> create_part_location(%{field: bad_value})
+      iex> create_inventory(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_part_location(attrs \\ %{}) do
-    %Inventory{}
+  def create_inventory(attrs \\ %{}) do
+    %I{}
     |> Inventory.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a part_location.
+  Updates a inventory.
 
   ## Examples
 
-      iex> update_part_location(part_location, %{field: new_value})
+      iex> update_inventory(inventory, %{field: new_value})
       {:ok, %Inventory{}}
 
-      iex> update_part_location(part_location, %{field: bad_value})
+      iex> update_inventory(inventory, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_part_location(%Inventory{} = part_location, attrs) do
-    part_location
+  def update_inventory(%I{} = inventory, attrs) do
+    inventory
     |> Inventory.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a part_location.
+  Deletes a inventory.
 
   ## Examples
 
-      iex> delete_part_location(part_location)
+      iex> delete_inventory(inventory)
       {:ok, %Inventory{}}
 
-      iex> delete_part_location(part_location)
+      iex> delete_inventory(inventory)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_part_location(%Inventory{} = part_location) do
-    Repo.delete(part_location)
+  def delete_inventory(%I{} = inventory) do
+    Repo.delete(inventory)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking part_location changes.
+  Returns an `%Ecto.Changeset{}` for tracking inventory changes.
 
   ## Examples
 
-      iex> change_part_location(part_location)
+      iex> change_inventory(inventory)
       %Ecto.Changeset{data: %Inventory{}}
 
   """
-  def change_part_location(%Inventory{} = part_location, attrs \\ %{}) do
-    Inventory.changeset(part_location, attrs)
+  def change_inventory(%I{} = inventory, attrs \\ %{}) do
+    I.changeset(inventory, attrs)
   end
 end

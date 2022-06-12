@@ -21,6 +21,7 @@ defmodule ToryWeb.Router do
     resources "/parameters", ParameterController
     resources "/parts", PartController
     resources "/locations", LocationController
+    resources "/inventories", InventoryController
   end
 
   # Other scopes may use custom stacks.
