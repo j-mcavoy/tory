@@ -3,26 +3,26 @@
 <table>
   <thead>
     <tr>
+      <th>Part</th>
+      <th>Location</th>
       <th>Count</th>
 
       <th></th>
     </tr>
   </thead>
   <tbody>
-<%= for i <- @inventories do %>
-    <tr>
-      <td><%= i.count %></td>
-
-      <!--
-      <td>
-        <span><%= link "Show", to: Routes.inventory_path(@conn, :show,i) %></span>
-        <span><%= link "Edit", to: Routes.inventory_path(@conn, :edit, i) %></span>
-        <span><%= link "Delete", to: Routes.inventory_path(@conn, :delete, i), method: :delete, data: [confirm: "Are you sure?"] %></span>
-      </td>
-    </tr>
-      -->
+    <%= for i <- @inventories do %>
+      <tr>
+        <td><%= link i.part.mpn, to: Routes.part_path @conn, :show, i.part.id %></td>
+        <td><%= link i.location.name, to: Routes.location_path @conn, :show, i.location.id %></td>
+        <td><%= i.count %></td>
+        <td>
+          <span><%= link "Show", to: Routes.inventory_path(@conn, :show,i) %></span>
+          <span><%= link "Edit", to: Routes.inventory_path(@conn, :edit, i) %></span>
+          <span><%= link "Delete", to: Routes.inventory_path(@conn, :delete, i), method: :delete, data: [confirm: "Are you sure?"] %></span>
+        </td>
       </tr>
-<% end %>
+    <% end %>
   </tbody>
 </table>
 

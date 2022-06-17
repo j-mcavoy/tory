@@ -1,0 +1,21 @@
+<h1>Show inventory</h1>
+
+<ul>
+  <li>
+    <strong>Part:</strong>
+    <%= link @inventory.part.mpn, to: Routes.part_path(@conn, :show, @inventory.part.id) %>
+  </li>
+
+  <li>
+    <strong>Location:</strong>
+    <%= link @inventory.location.name, to: Routes.part_path(@conn, :show, @inventory.location.id) %>
+  </li>
+
+  <li>
+    <strong>Count:</strong>
+    <%= @inventory.count %>
+  </li>
+</ul>
+
+<span><%= link "Edit", to: Routes.inventory_path(@conn, :edit, @inventory) %></span> |
+<span><%= link "Back", to: Routes.inventory_path(@conn, :index) %></span>

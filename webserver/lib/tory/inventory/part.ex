@@ -3,7 +3,7 @@ defmodule Tory.Inventory.Part do
   import Ecto.Changeset
 
   alias Tory.Inventory.Inventory
-  alias Tory.Meta.{Parameter, PartParameter}
+  alias Tory.Meta.{Parameter, PartParameter, Icon}
 
   schema "parts" do
     field :barcode, :string
@@ -13,6 +13,7 @@ defmodule Tory.Inventory.Part do
     field :octopart_uuid, :string
     has_many :inventories, Inventory
     many_to_many :parameters, Parameter, join_through: PartParameter
+    field :icon, :string
 
     timestamps()
   end

@@ -16,7 +16,7 @@ defmodule Tory.Inventory.Location do
   def changeset(location, attrs) do
     location
     |> cast(attrs, [:name, :description])
-    |> validate_required([:name, :description])
+    |> validate_required([:name])
     |> unique_constraint(:name)
   end
 end

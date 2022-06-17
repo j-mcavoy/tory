@@ -8,7 +8,7 @@ defmodule Tory.Repo.Migrations.CreateParts do
       add(:barcode, :string)
       add(:octopart_uuid, :uuid)
       add(:description, :string)
-
+      add(:icon, :string)
       timestamps()
     end
 

@@ -27,7 +27,7 @@ defmodule ToryWeb.InventoryController do
   end
 
   def show(conn, %{"id" => id}) do
-    inventory = Inventory.get_inventory!(id)
+    inventory = Inventory.get_inventory_details!(id)
     render(conn, "show.html", inventory: inventory)
   end
 

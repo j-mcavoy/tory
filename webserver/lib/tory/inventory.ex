@@ -37,8 +37,8 @@ defmodule Tory.Inventory do
   """
   def get_location!(id), do: Repo.get!(Location, id)
 
-  def get_location_inventory!(id) do
-    Repo.get!(Location, id) |> Repo.preload(inventories: :part)
+  def get_location_inventory!(l_id) do
+    Repo.get!(Location, l_id) |> Repo.preload(inventories: :part)
   end
 
   @doc """
@@ -137,8 +137,14 @@ defmodule Tory.Inventory do
   """
   def get_part!(id), do: Repo.get!(Part, id)
 
+  def get_part_icon!(part) do
+    part |> Repo.preload(:icon)
+  end
+
   def get_part_details!(id) do
-    Repo.get!(Part, id) |> Repo.preload(inventories: :location) |> Repo.preload(:parameters)
+    Repo.get!(Part, id)
+    |> Repo.preload(inventories: :location)
+    |> Repo.preload(:parameters)
   end
 
   @doc """
@@ -218,7 +224,7 @@ defmodule Tory.Inventory do
 
   """
   def list_inventories do
-    Repo.all(I)
+    Repo.all(I) |> Repo.preload(:part) |> Repo.preload(:location)
   end
 
   @doc """
@@ -236,6 +242,10 @@ defmodule Tory.Inventory do
 
   """
   def get_inventory!(id), do: Repo.get!(I, id)
+
+  def get_inventory_details!(i_id) do
+    get_inventory!(i_id) |> Repo.preload([:part, :location])
+  end
 
   @doc """
   Creates a inventory.
@@ -298,7 +308,15 @@ defmodule Tory.Inventory do
       %Ecto.Changeset{data: %Inventory{}}
 
   """
-  def change_inventory(%I{} = inventory, attrs \\ %{}) do
-    I.changeset(inventory, attrs)
-  end
+  def change_inventory(%I{} = inventory, attrs \\ %{}), do: I.changeset(inventory, attrs)
+
+  def inventory_inc(%I{count: count} = inventory, amount),
+    do: inventory |> I.changeset(%{count: count + amount}) |> Repo.update()
+
+  def inventory_inc(%I{count: count} = inventory), do: inventory_inc(inventory, 1)
+
+  def inventory_dec(%I{count: count} = inventory, amount),
+    do: inventory |> I.changeset(%{count: count + amount}) |> Repo.update()
+
+  def inventory_dec(%I{count: count} = inventory), do: inventory_dec(inventory, 1)
 end

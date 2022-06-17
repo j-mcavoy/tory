@@ -110,4 +110,58 @@ defmodule Tory.MetaTest do
       assert %Ecto.Changeset{} = Meta.change_part_parameter(part_parameter)
     end
   end
+
+  describe "icons" do
+    alias Tory.Meta.Icon
+
+    import Tory.MetaFixtures
+
+    @invalid_attrs %{icon: nil}
+
+    test "list_icons/0 returns all icons" do
+      icon = icon_fixture()
+      assert Meta.list_icons() == [icon]
+    end
+
+    test "get_icon!/1 returns the icon with given id" do
+      icon = icon_fixture()
+      assert Meta.get_icon!(icon.id) == icon
+    end
+
+    test "create_icon/1 with valid data creates a icon" do
+      valid_attrs = %{icon: "some icon"}
+
+      assert {:ok, %Icon{} = icon} = Meta.create_icon(valid_attrs)
+      assert icon.icon == "some icon"
+    end
+
+    test "create_icon/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Meta.create_icon(@invalid_attrs)
+    end
+
+    test "update_icon/2 with valid data updates the icon" do
+      icon = icon_fixture()
+      update_attrs = %{icon: "some updated icon"}
+
+      assert {:ok, %Icon{} = icon} = Meta.update_icon(icon, update_attrs)
+      assert icon.icon == "some updated icon"
+    end
+
+    test "update_icon/2 with invalid data returns error changeset" do
+      icon = icon_fixture()
+      assert {:error, %Ecto.Changeset{}} = Meta.update_icon(icon, @invalid_attrs)
+      assert icon == Meta.get_icon!(icon.id)
+    end
+
+    test "delete_icon/1 deletes the icon" do
+      icon = icon_fixture()
+      assert {:ok, %Icon{}} = Meta.delete_icon(icon)
+      assert_raise Ecto.NoResultsError, fn -> Meta.get_icon!(icon.id) end
+    end
+
+    test "change_icon/1 returns a icon changeset" do
+      icon = icon_fixture()
+      assert %Ecto.Changeset{} = Meta.change_icon(icon)
+    end
+  end
 end

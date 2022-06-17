@@ -32,4 +32,18 @@ defmodule Tory.MetaFixtures do
 
     part_parameter
   end
+
+  @doc """
+  Generate a icon.
+  """
+  def icon_fixture(attrs \\ %{}) do
+    {:ok, icon} =
+      attrs
+      |> Enum.into(%{
+        icon: "some icon"
+      })
+      |> Tory.Meta.create_icon()
+
+    icon
+  end
 end
