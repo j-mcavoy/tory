@@ -32,7 +32,7 @@ defmodule ToryWeb.PartController do
   end
 
   def edit(conn, %{"id" => id}) do
-    part = Inventory.get_part!(id)
+    part = Inventory.get_part_details!(id)
     changeset = Inventory.change_part(part)
     render(conn, "edit.html", part: part, changeset: changeset)
   end

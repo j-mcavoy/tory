@@ -9,6 +9,22 @@
   <%= text_input f, :mpn %>
   <%= error_tag f, :mpn %>
 
+  <%= label f, :mpn_extended %>
+  <%= text_input f, :mpn_extended %>
+  <%= error_tag f, :mpn_extended %>
+
+  <%= label f, :description %>
+  <%= text_input f, :description %>
+  <%= error_tag f, :description %>
+
+  <%= label f, :distributor_url %>
+  <%= text_input f, :distributor_url %>
+  <%= error_tag f, :distributor_url %>
+
+  <%= label f, :icon %>
+  <%= text_input f, :icon %>
+  <%= error_tag f, :icon %>
+
   <%= label f, :datasheet %>
   <%= text_input f, :datasheet %>
   <%= error_tag f, :datasheet %>
@@ -20,6 +36,10 @@
   <%= label f, :octopart_uuid %>
   <%= text_input f, :octopart_uuid %>
   <%= error_tag f, :octopart_uuid %>
+
+  <%= label f, :parameters_txt %>
+  <%= text_input f, :parameters_txt %>
+  <%= error_tag f, :parameters_txt %>
 
   <div>
     <%= submit "Save" %>

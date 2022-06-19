@@ -10,10 +10,12 @@ defmodule Tory.Inventory.Part do
     field :datasheet, :string
     field :description, :string
     field :mpn, :string
+    field :mpn_extended, :string
+    field :distributor_url, :string
     field :octopart_uuid, :string
+    field :icon, :string
     has_many :inventories, Inventory
     many_to_many :parameters, Parameter, join_through: PartParameter
-    field :icon, :string
 
     timestamps()
   end
