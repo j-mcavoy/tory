@@ -9,7 +9,7 @@ services:
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       OCTOPART_APIKEY: ${OCTOPART_APIKEY}
-    image: elixir
+    image: johnemac36/tory_webserver
     build: webserver
     ports:
       - "${PORT}:${PORT}"
