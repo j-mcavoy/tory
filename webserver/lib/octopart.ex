@@ -1,42 +1,52 @@
 defmodule Tory.Octopart do
   alias Tory.Inventory.Part
+  alias Neuron
 
-  require GraphqlBuilder
-  require HTTPoison
-
-  alias GraphqlBuilder.Query
-
-  @octopart_token System.get_env("OCTOPART_API_KEY")
+  @octopart_token System.get_env("OCTOPART_APIKEY")
   @octopart_endpoint 'https://octopart.com/api/v4/endpoint'
 
   @options [ssl: [versions: [:"tlsv1.2"]], hackney: [:insecure], recv_timeout: 500]
   # @options [ssl: [verify: :verify_none]]
 
-  def fetch_meta_from_octopart(%Part{octopart_uuid: uid} = part) do
-    body = %{
-      operation: nil,
-      query:
-        'search(q: "2k2 5% 500mW", limit: 1) { results { part { mpn manufacturer { name } } } }'
-    }
+  def fetch_meta_from_octopart(%Part{octopart_uuid: uid, mpn: mpn}) do
+    IO.puts(mpn)
 
-    b =
-      '{"operationName":null,"variables":{},"query":"{ search(q: \\"2k2 5% 500mW\\", limit: 1) { results { part { mpn manufacturer { name } } } } } "} '
+    resp =
+      """
+      query($q: String) {
+        search(q: $q, limit: 1) {
+          results {
+            part {
+              manufacturer {
+                name
+                homepage_url
+              }
+              manufacturer_url
+              id
+              octopart_url
+              aka_mpns
+              generic_mpn
+              images {
+                url
+              }
+              best_datasheet {
+                url
+              }
+            }
+          }
+        }
+      }
+      """
+      |> IO.inspect()
+      |> Neuron.query(
+        %{q: mpn},
+        url: @octopart_endpoint,
+        headers: [token: @octopart_token]
+      )
 
-    headers = [
-      # {'Content-Type', 'application/json'},
-      # {'Host', '*'},
-      {"token", @octopart_token},
-      {"Accept", "application/json"},
-      # {"Accept-Encoding", "gzip, deflate, br"},
-      {"Content-Type", "application/json"},
-      {"Content-Length", length(b)}
-    ]
+    IO.inspect(resp)
 
-    HTTPoison.post(
-      @octopart_endpoint,
-      b,
-      headers,
-      @options
-    )
+    {:ok, %{body: %{"data" => %{"search" => %{"results" => [result | _]}}}}} = resp
+    result
   end
 end
