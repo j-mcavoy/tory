@@ -27,24 +27,23 @@ defmodule Tory.Part.Part do
     field(:estimated_factory_lead_days, :integer)
     field(:barcode, :string)
 
-    belongs_to :company, Company
-    has_many :stocks, Stock
-    many_to_many :specs, Spec, join_through: PartSpec
+    belongs_to :company, Company, on_replace: :update
+    has_many :stocks, Stock, on_replace: :delete
+    many_to_many :specs, Spec, join_through: PartSpec, on_replace: :delete
 
     timestamps()
   end
 
   @doc false
   def changeset(part, attrs \\ %{}) do
+    IO.inspect(attrs)
+
     part
     |> cast(
       attrs,
       ~w(mpn octopart_id name generic_mpn manufacturer_url free_sample_url short_description slug octopart_url series image datasheet cad_request_url total_avail avg_avail estimated_factory_lead_days barcode)a
     )
-    # |> put_assoc(:stocks, with: Stock)
-    |> put_assoc(:company, get_or_insert_company(attrs))
-    # |> cast_assoc(:stocks, with: Stock)
-    # |> put_assoc(:specs, with: Spec)
+    |> cast_assoc(:company)
     |> unique_constraint(:octopart_id)
   end
 
@@ -56,16 +55,17 @@ defmodule Tory.Part.Part do
   defp get_or_insert_company(%{name: name} = company) do
     IO.inspect(company)
 
-    Repo.get_by(Company, name: name) ||
-      Company.changeset(%Company{}, company)
-      |> Repo.insert_or_update()
+    with c <- Repo.get_by(Company, name: name) do
+      Company.changeset(%Company{}, c)
+    end
+    |> Repo.insert_or_update()
   end
 
-  defp get_or_insert_specs(%{name: name} = spec) do
-    IO.inspect(spec)
-
-    Repo.get_by(Spec, name: name) ||
+  defp get_or_insert_spec(spec) do
+    Repo.get_by(Spec, name: spec.name, part: spec.part) ||
       Spec.changeset(%Spec{}, spec)
       |> Repo.insert_or_update()
   end
+
+  defp get_or_insert_specs(specs), do: Enum.map(specs, &get_or_insert_spec(&1))
 end

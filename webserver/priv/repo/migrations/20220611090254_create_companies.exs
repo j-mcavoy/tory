@@ -14,8 +14,6 @@ defmodule Tory.Repo.Migrations.Companies do
       timestamps()
     end
 
-    create(unique_index(:companies, [:name]))
-
     create table(:company_aliases) do
       add(:alias, :string, null: false)
       add(:company_id, references(:companies))

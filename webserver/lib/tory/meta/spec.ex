@@ -5,7 +5,7 @@ defmodule Tory.Meta.Spec do
   alias Tory.Meta.Attribute
 
   schema "specs" do
-    has_one :attribute, Attribute
+    has_one :attribute, Attribute, on_replace: :update
     field :value, :string
     field(:units, :string)
     field(:display_value, :string)
@@ -16,8 +16,8 @@ defmodule Tory.Meta.Spec do
   @doc false
   def changeset(parameter, attrs) do
     parameter
-    |> cast(attrs, [:name, :value])
-    |> cast_assoc(:attribue, attrs[:attribute])
+    |> cast(attrs, [:units, :value, :display_value])
+    |> put_assoc(:attribue, attrs[:attribute])
     |> validate_required([:name, :value])
   end
 end

@@ -9,6 +9,12 @@ defmodule Tory.Octopart do
 
   @octopart_endpoint 'https://octopart.com/api/v4/endpoint'
 
+  def populate_octopart_data(%Part{} = part) do
+    fetch_meta_from_octopart(part)
+    |> parse_octopart_part_query(part.id)
+    |> insert_octopart_data(part)
+  end
+
   # @options [ssl: [verify: :verify_none]]
 
   def fetch_meta_from_octopart(%Part{id: id, octopart_id: octopart_id, mpn: mpn}) do
@@ -37,7 +43,7 @@ defmodule Tory.Octopart do
               octopart_url
               best_datasheet { url }
               best_image { url }
-              manufacturer { id name homepage_url is_verified is_distributorapi display_flag slug}
+              manufacturer { id name homepage_url is_verified is_distributorapi display_flag slug aliases}
               specs {
                 display_value
                 units
@@ -106,7 +112,8 @@ defmodule Tory.Octopart do
       is_verified: company.is_verified,
       is_distributorapi: company.is_distributorapi,
       display_flag: company.display_flag,
-      slug: company.slug
+      slug: company.slug,
+      aliases: Enum.map(company.aliases, &%{alias: &1})
     }
 
     part = %{
@@ -128,12 +135,11 @@ defmodule Tory.Octopart do
       company: company
     }
 
-    # %{mpns: mpns, specs: specs, company: company, part: part}
     part
   end
 
-  # def insert_octopart_data(%{mpns: mpns, specs: specs, company: company, part: part}) do
-  def insert_octopart_data(%{} = part) do
-    Tory.Part.upsert_part(part)
+  def insert_octopart_data(octopart, old_part) do
+    change = Part.changeset(old_part, octopart)
+    Repo.insert_or_update(change, on_conflict: :nothing)
   end
 end
