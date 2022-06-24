@@ -2,12 +2,12 @@ defmodule Tory.Inventory.Location do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Tory.Inventory.Inventory
+  alias Tory.Inventory.Stock
 
   schema "locations" do
     field :description, :string
     field :name, :string
-    has_many :inventories, Inventory
+    has_many :stocks, Stock
 
     timestamps()
   end

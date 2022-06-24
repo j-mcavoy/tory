@@ -6,196 +6,196 @@ defmodule Tory.Meta do
   import Ecto.Query, warn: false
   alias Tory.Repo
 
-  alias Tory.Meta.Parameter
+  alias Tory.Meta.Attribute
 
   @doc """
-  Returns the list of parameters.
+  Returns the list of attributes.
 
   ## Examples
 
-      iex> list_parameters()
-      [%Parameter{}, ...]
+      iex> list_attributes()
+      [%Attribute{}, ...]
 
   """
-  def list_parameters do
-    Repo.all(Parameter)
+  def list_attributes do
+    Repo.all(Attribute)
   end
 
   @doc """
-  Gets a single parameter.
+  Gets a single attribute.
 
-  Raises `Ecto.NoResultsError` if the Parameter does not exist.
+  Raises `Ecto.NoResultsError` if the Attribute does not exist.
 
   ## Examples
 
-      iex> get_parameter!(123)
-      %Parameter{}
+      iex> get_attribute!(123)
+      %Attribute{}
 
-      iex> get_parameter!(456)
+      iex> get_attribute!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_parameter!(id), do: Repo.get!(Parameter, id)
+  def get_attribute!(id), do: Repo.get!(Attribute, id)
 
   @doc """
-  Creates a parameter.
+  Creates a attribute.
 
   ## Examples
 
-      iex> create_parameter(%{field: value})
-      {:ok, %Parameter{}}
+      iex> create_attribute(%{field: value})
+      {:ok, %Attribute{}}
 
-      iex> create_parameter(%{field: bad_value})
+      iex> create_attribute(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_parameter(attrs \\ %{}) do
-    %Parameter{}
-    |> Parameter.changeset(attrs)
+  def create_attribute(attrs \\ %{}) do
+    %Attribute{}
+    |> Attribute.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a parameter.
+  Updates a attribute.
 
   ## Examples
 
-      iex> update_parameter(parameter, %{field: new_value})
-      {:ok, %Parameter{}}
+      iex> update_attribute(attribute, %{field: new_value})
+      {:ok, %Attribute{}}
 
-      iex> update_parameter(parameter, %{field: bad_value})
+      iex> update_attribute(attribute, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_parameter(%Parameter{} = parameter, attrs) do
-    parameter
-    |> Parameter.changeset(attrs)
+  def update_attribute(%Attribute{} = attribute, attrs) do
+    attribute
+    |> Attribute.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a parameter.
+  Deletes a attribute.
 
   ## Examples
 
-      iex> delete_parameter(parameter)
-      {:ok, %Parameter{}}
+      iex> delete_attribute(attribute)
+      {:ok, %Attribute{}}
 
-      iex> delete_parameter(parameter)
+      iex> delete_attribute(attribute)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_parameter(%Parameter{} = parameter) do
-    Repo.delete(parameter)
+  def delete_attribute(%Attribute{} = attribute) do
+    Repo.delete(attribute)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking parameter changes.
+  Returns an `%Ecto.Changeset{}` for tracking attribute changes.
 
   ## Examples
 
-      iex> change_parameter(parameter)
-      %Ecto.Changeset{data: %Parameter{}}
+      iex> change_attribute(attribute)
+      %Ecto.Changeset{data: %Attribute{}}
 
   """
-  def change_parameter(%Parameter{} = parameter, attrs \\ %{}) do
-    Parameter.changeset(parameter, attrs)
+  def change_attribute(%Attribute{} = attribute, attrs \\ %{}) do
+    Attribute.changeset(attribute, attrs)
   end
 
-  alias Tory.Meta.PartParameter
+  alias Tory.Part.PartSpec
 
   @doc """
-  Returns the list of partparameters.
+  Returns the list of partattributes.
 
   ## Examples
 
-      iex> list_partparameters()
-      [%PartParameter{}, ...]
+      iex> list_partattributes()
+      [%PartSpec{}, ...]
 
   """
-  def list_partparameters do
-    Repo.all(PartParameter)
+  def list_partattributes do
+    Repo.all(PartSpec)
   end
 
   @doc """
-  Gets a single part_parameter.
+  Gets a single part_spec.
 
-  Raises `Ecto.NoResultsError` if the Part parameter does not exist.
+  Raises `Ecto.NoResultsError` if the Part attribute does not exist.
 
   ## Examples
 
-      iex> get_part_parameter!(123)
-      %PartParameter{}
+      iex> get_part_spec!(123)
+      %PartSpec{}
 
-      iex> get_part_parameter!(456)
+      iex> get_part_spec!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_part_parameter!(id), do: Repo.get!(PartParameter, id)
+  def get_part_spec!(id), do: Repo.get!(PartSpec, id)
 
   @doc """
-  Creates a part_parameter.
+  Creates a part_spec.
 
   ## Examples
 
-      iex> create_part_parameter(%{field: value})
-      {:ok, %PartParameter{}}
+      iex> create_part_spec(%{field: value})
+      {:ok, %PartSpec{}}
 
-      iex> create_part_parameter(%{field: bad_value})
+      iex> create_part_spec(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_part_parameter(attrs \\ %{}) do
-    %PartParameter{}
-    |> PartParameter.changeset(attrs)
+  def create_part_spec(attrs \\ %{}) do
+    %PartSpec{}
+    |> PartSpec.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a part_parameter.
+  Updates a part_spec.
 
   ## Examples
 
-      iex> update_part_parameter(part_parameter, %{field: new_value})
-      {:ok, %PartParameter{}}
+      iex> update_part_spec(part_spec, %{field: new_value})
+      {:ok, %PartSpec{}}
 
-      iex> update_part_parameter(part_parameter, %{field: bad_value})
+      iex> update_part_spec(part_spec, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_part_parameter(%PartParameter{} = part_parameter, attrs) do
-    part_parameter
-    |> PartParameter.changeset(attrs)
+  def update_part_spec(%PartSpec{} = part_spec, attrs) do
+    part_spec
+    |> PartSpec.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a part_parameter.
+  Deletes a part_spec.
 
   ## Examples
 
-      iex> delete_part_parameter(part_parameter)
-      {:ok, %PartParameter{}}
+      iex> delete_part_spec(part_spec)
+      {:ok, %PartSpec{}}
 
-      iex> delete_part_parameter(part_parameter)
+      iex> delete_part_spec(part_spec)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_part_parameter(%PartParameter{} = part_parameter) do
-    Repo.delete(part_parameter)
+  def delete_part_spec(%PartSpec{} = part_spec) do
+    Repo.delete(part_spec)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking part_parameter changes.
+  Returns an `%Ecto.Changeset{}` for tracking part_spec changes.
 
   ## Examples
 
-      iex> change_part_parameter(part_parameter)
-      %Ecto.Changeset{data: %PartParameter{}}
+      iex> change_part_spec(part_spec)
+      %Ecto.Changeset{data: %PartSpec{}}
 
   """
-  def change_part_parameter(%PartParameter{} = part_parameter, attrs \\ %{}) do
-    PartParameter.changeset(part_parameter, attrs)
+  def change_part_spec(%PartSpec{} = part_spec, attrs \\ %{}) do
+    PartSpec.changeset(part_spec, attrs)
   end
 
   alias Tory.Meta.Icon
