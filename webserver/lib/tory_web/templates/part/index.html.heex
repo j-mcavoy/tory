@@ -3,29 +3,33 @@
 <table>
   <thead>
     <tr>
+      <th>Image</th>
       <th>Mpn</th>
+      <th>Description</th>
+      <th>Manufacturer URL</th>
       <th>Datasheet</th>
-      <th>Barcode</th>
-      <th>Octopart uid</th>
+      <th>Octopart Link</th>
 
       <th></th>
     </tr>
   </thead>
   <tbody>
-<%= for part <- @parts do %>
-    <tr>
-      <td><%= part.mpn %></td>
-      <td><%= part.datasheet %></td>
-      <td><%= part.barcode %></td>
-      <td><%= part.octopart_uuid %></td>
+    <%= for part <- @parts do %>
+      <tr>
+        <td><a href={Routes.part_path(@conn, :show, part)}><img src={part.image}/></a></td>
+        <td><%= link part.mpn, to: Routes.part_path(@conn, :show, part) %></td>
+        <td><%= part.short_description %></td>
+        <td><%= link "manufacturer url", to: part.manufacturer_url %></td>
+        <td><%= link "datasheet", to: part.datasheet%></td>
+        <td><%= link part.octopart_id, to: part.octopart_url %></td>
 
-      <td>
-        <span><%= link "Show", to: Routes.part_path(@conn, :show, part) %></span>
-        <span><%= link "Edit", to: Routes.part_path(@conn, :edit, part) %></span>
-        <span><%= link "Delete", to: Routes.part_path(@conn, :delete, part), method: :delete, data: [confirm: "Are you sure?"] %></span>
-      </td>
-    </tr>
-<% end %>
+        <td>
+          <span><%= link "Show", to: Routes.part_path(@conn, :show, part) %></span>
+          <span><%= link "Edit", to: Routes.part_path(@conn, :edit, part) %></span>
+          <span><%= link "Delete", to: Routes.part_path(@conn, :delete, part), method: :delete, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 

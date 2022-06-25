@@ -1,21 +1,21 @@
 defmodule ToryWeb.PartController do
   use ToryWeb, :controller
 
-  alias Tory.Inventory
-  alias Tory.Inventory.Part
+  alias Tory.Part
+  alias Tory.Part.Part, as: P
 
   def index(conn, _params) do
-    parts = Inventory.list_parts()
+    parts = Part.list_parts()
     render(conn, "index.html", parts: parts)
   end
 
   def new(conn, _params) do
-    changeset = Inventory.change_part(%Part{})
+    changeset = Part.change_part(%P{})
     render(conn, "new.html", changeset: changeset)
   end
 
   def create(conn, %{"part" => part_params}) do
-    case Inventory.create_part(part_params) do
+    case Part.create_part(part_params) do
       {:ok, part} ->
         conn
         |> put_flash(:info, "Part created successfully.")
@@ -27,20 +27,22 @@ defmodule ToryWeb.PartController do
   end
 
   def show(conn, %{"id" => id}) do
-    part = Inventory.get_part_details!(id)
+    part = Part.get_part_preloaded!(id)
     render(conn, "show.html", part: part)
   end
 
   def edit(conn, %{"id" => id}) do
-    part = Inventory.get_part_details!(id)
-    changeset = Inventory.change_part(part)
+    part = Part.get_part_preloaded!(id)
+    changeset = Part.change_part(part)
     render(conn, "edit.html", part: part, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "part" => part_params}) do
-    part = Inventory.get_part!(id)
+  def populate_octopart(conn, %{} = part), do: Octopart.populate_octopart(part)
 
-    case Inventory.update_part(part, part_params) do
+  def update(conn, %{"id" => id, "part" => part_params}) do
+    part = Part.get_part!(id)
+
+    case Part.update_part(part, part_params) do
       {:ok, part} ->
         conn
         |> put_flash(:info, "Part updated successfully.")
@@ -52,8 +54,8 @@ defmodule ToryWeb.PartController do
   end
 
   def delete(conn, %{"id" => id}) do
-    part = Inventory.get_part!(id)
-    {:ok, _part} = Inventory.delete_part(part)
+    part = Part.get_part!(id)
+    {:ok, _part} = Part.delete_part(part)
 
     conn
     |> put_flash(:info, "Part deleted successfully.")

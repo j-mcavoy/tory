@@ -140,6 +140,7 @@ defmodule Tory.Octopart do
 
   def insert_octopart_data(octopart, old_part) do
     change = Part.changeset(old_part, octopart)
+    IO.inspect(change)
     Repo.insert_or_update(change, on_conflict: :nothing)
   end
 end

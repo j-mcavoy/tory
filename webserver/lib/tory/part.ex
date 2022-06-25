@@ -9,22 +9,11 @@ defmodule Tory.Part do
   def get_part(id), do: Repo.get(P, id)
   def get_part!(id), do: Repo.get!(P, id)
 
-  def change_part(%P{} = part, attrs \\ %{}), do: Part.changeset(part, attrs)
+  def change_part(%P{} = part, attrs \\ %{}), do: P.changeset(part, attrs)
 
-  def get_part_preloaded!(id),
-    do:
-      get_part!(id)
-      |> Repo.preload(specs: [:attributes], inventories: [:location], company: [:aliases])
-
-  def upsert_part(%{id: id} = part) do
-    case get_part(id) do
-      nil ->
-        Repo.insert!(part)
-
-      old_part ->
-        change = Repo.preload(old_part, [:company]) |> Part.changeset(part)
-        Repo.insert_or_update(change)
-    end
+  def get_part_preloaded!(id) do
+    get_part!(id)
+    |> Repo.preload(specs: [:attribute], inventories: [:location], company: [:aliases])
   end
 
   alias Tory.Meta.Spec
@@ -34,7 +23,7 @@ defmodule Tory.Part do
 
   def create_part(attrs \\ %{}) do
     %P{}
-    |> Part.changeset(attrs)
+    |> P.changeset(attrs)
     |> Repo.insert()
   end
 end

@@ -2,4 +2,10 @@
 
 <%= render "form.html", Map.put(assigns, :action, Routes.part_path(@conn, :update, @part)) %>
 
+<%= render "attributes_table", Map.put(assigns, :part, @part) %>
+
+<button phx-click="populate_octopart">Populate From Octopart!</button>
+<br>
+
+
 <span><%= link "Back", to: Routes.part_path(@conn, :index) %></span>

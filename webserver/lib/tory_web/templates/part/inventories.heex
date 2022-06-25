@@ -1,0 +1,15 @@
+<article>
+  <h3>Inventories</h3>
+  <table>
+    <tr>
+      <th>Location</th>
+      <th>Count</th>
+    </tr>
+    <%= for i <- @part.inventories do%>
+      <tr>
+        <td><%= link i.location.name, to: Routes.location_path @conn , :show, i.location %></td>
+        <td><%= i.count %></td>
+      </tr>
+    <% end %>
+  </table>
+</article>
