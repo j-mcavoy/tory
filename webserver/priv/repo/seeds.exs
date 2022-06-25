@@ -1,5 +1,5 @@
 alias Tory.Repo
-alias Tory.Inventory.{Location, Stock}
+alias Tory.Inventory.{Location, Inventory}
 alias Tory.Part.Part
 
 %Part{
@@ -14,7 +14,7 @@ alias Tory.Part.Part
 }
 |> Repo.insert!()
 
-%Stock{
+%Inventory{
   location_id: 0,
   part_id: 0,
   count: 10

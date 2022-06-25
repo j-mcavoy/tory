@@ -3,7 +3,7 @@ defmodule Tory.Part.Part do
   import Ecto.Changeset
   alias Tory.Repo
 
-  alias Tory.Inventory.Stock
+  alias Tory.Inventory.Inventory
   alias Tory.Company.Company
   alias Tory.Meta.Spec
   alias Tory.Part.PartSpec
@@ -28,8 +28,8 @@ defmodule Tory.Part.Part do
     field(:barcode, :string)
 
     belongs_to :company, Company, on_replace: :update
-    has_many :stocks, Stock, on_replace: :delete
-    many_to_many :specs, Spec, join_through: PartSpec, on_replace: :delete
+    has_many :inventories, Inventory, on_replace: :delete
+    many_to_many :specs, Spec, join_through: PartSpec
 
     timestamps()
   end
@@ -44,6 +44,8 @@ defmodule Tory.Part.Part do
       ~w(mpn octopart_id name generic_mpn manufacturer_url free_sample_url short_description slug octopart_url series image datasheet cad_request_url total_avail avg_avail estimated_factory_lead_days barcode)a
     )
     |> cast_assoc(:company)
+    |> cast_assoc(:specs)
+    |> cast_assoc(:inventories)
     |> unique_constraint(:octopart_id)
   end
 

@@ -8,12 +8,13 @@ defmodule Tory.Part.PartSpec do
   schema "part_specs" do
     belongs_to :spec, Spec
     belongs_to :part, Part
+
     timestamps()
   end
 
   def changeset(spec, attrs) do
     spec
-    |> cast(attrs, [:spec, :part_id])
-    |> validate_required([:spec_id, :part_id])
+    |> cast_assoc(:part)
+    |> cast_assoc(:spec)
   end
 end

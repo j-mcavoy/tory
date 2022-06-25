@@ -2,7 +2,7 @@ defmodule Tory.Repo.Migrations.CreateInventories do
   use Ecto.Migration
 
   def change do
-    create table(:stocks) do
+    create table(:inventories) do
       add(:count, :integer)
       add(:part_id, references(:parts, on_delete: :nothing))
       add(:location_id, references(:locations, on_delete: :nothing))
@@ -10,7 +10,7 @@ defmodule Tory.Repo.Migrations.CreateInventories do
       timestamps()
     end
 
-    create(index(:stocks, [:part_id]))
-    create(index(:stocks, [:location_id]))
+    create(index(:inventories, [:part_id]))
+    create(index(:inventories, [:location_id]))
   end
 end

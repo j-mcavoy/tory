@@ -2,14 +2,19 @@ defmodule Tory.Part do
   import Ecto.Query, warn: false
   alias Tory.Repo
 
-  alias Tory.Part.Part
+  alias Tory.Part
+  alias Tory.Part.Part, as: P
 
-  def list_parts, do: Repo.all(Part)
-  def get_part(id), do: Repo.get(Part, id)
-  def get_part!(id), do: Repo.get!(Part, id)
+  def list_parts, do: Repo.all(P)
+  def get_part(id), do: Repo.get(P, id)
+  def get_part!(id), do: Repo.get!(P, id)
+
+  def change_part(%P{} = part, attrs \\ %{}), do: Part.changeset(part, attrs)
 
   def get_part_preloaded!(id),
-    do: get_part!(id) |> Repo.preload([:specs, :stocks, company: [:aliases]])
+    do:
+      get_part!(id)
+      |> Repo.preload(specs: [:attributes], inventories: [:location], company: [:aliases])
 
   def upsert_part(%{id: id} = part) do
     case get_part(id) do
@@ -27,14 +32,9 @@ defmodule Tory.Part do
   def get_spec(id), do: Repo.get(Spec, id)
   def get_spec!(id), do: Repo.get!(Spec, id)
 
-  def upsert_spec(%{id: id, name: name} = spec) do
-    case get_spec(id) do
-      nil ->
-        Repo.insert!(spec)
-
-      old_spec ->
-        change = Spec.changeset(old_spec, spec)
-        Repo.insert_or_update(change)
-    end
+  def create_part(attrs \\ %{}) do
+    %P{}
+    |> Part.changeset(attrs)
+    |> Repo.insert()
   end
 end
