@@ -28,6 +28,7 @@ defmodule ToryWeb.PartController do
 
   def show(conn, %{"id" => id}) do
     part = Part.get_part_preloaded!(id)
+    IO.inspect(part.specs)
     render(conn, "show.html", part: part)
   end
 

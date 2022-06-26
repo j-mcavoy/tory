@@ -17,7 +17,7 @@ defmodule Tory.Repo.Migrations.CreateAttributeSpecs do
       add(:value, :string)
       add(:units, :string)
 
-      add(:attribute_id, references(:attributes))
+      add(:attribute_id, references(:attributes), null: false)
 
       timestamps()
     end

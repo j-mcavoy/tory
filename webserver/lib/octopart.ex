@@ -99,23 +99,16 @@ defmodule Tory.Octopart do
 
         if not is_nil(a?) do
           IO.inspect(a?.id)
-          attribute = Map.put(a, :id, a?.id)
           s? = Repo.get_by(Spec, value: s.value, attribute_id: a?.id)
 
           if not is_nil(s?) do
-            %{
-              id: s?.id,
-              value: s.value,
-              units: s.units,
-              display_value: s.display_value,
-              attribute: attribute
-            }
+            %{id: s?.id, attribute_id: a?.id}
           else
             %{
               value: s.value,
               units: s.units,
               display_value: s.display_value,
-              attribute: attribute
+              attribute_id: a?.id
             }
           end
         else
