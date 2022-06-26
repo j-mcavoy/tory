@@ -91,18 +91,42 @@ defmodule Tory.Octopart do
   def parse_octopart_json({:ok, %{body: %{data: %{parts: [result | _]}}}}),
     do: result
 
-  def parse_octopart_specs_query(specs) do
+  def parse_octopart_specs_query(specs, part_id) do
     Enum.map(
       specs,
       fn %{attribute: a} = s ->
+        import Ecto.Query
+
         a? = Repo.get_by(Attribute, group: a.group, name: a.name, shortname: a.shortname)
 
         if not is_nil(a?) do
           IO.inspect(a?.id)
-          s? = Repo.get_by(Spec, value: s.value, attribute_id: a?.id)
+
+          s? =
+            Repo.one(
+              from s in Spec,
+                join: ps in PartSpec,
+                on: ps.spec_id == s.id,
+                join: p in Part,
+                on: ps.part_id == p.id,
+                where:
+                  p.id == ^part_id and s.attribute_id == ^a?.id and
+                    s.display_value == ^s.display_value and
+                    s.value == ^s.value,
+                distinct: s.id,
+                select: s
+            )
+
+          IO.inspect(s?)
 
           if not is_nil(s?) do
-            %{id: s?.id, attribute_id: a?.id}
+            %{
+              id: s?.id,
+              value: s.value,
+              units: s.units,
+              display_value: s.display_value,
+              attribute_id: a?.id
+            }
           else
             %{
               value: s.value,
@@ -234,7 +258,7 @@ defmodule Tory.Octopart do
       ) do
     mpns = Enum.map(aka_mpns, &%{part_id: part_id, mpn: &1})
 
-    specs = parse_octopart_specs_query(specs)
+    specs = parse_octopart_specs_query(specs, part_id)
 
     company = parse_octopart_company_query(company)
 

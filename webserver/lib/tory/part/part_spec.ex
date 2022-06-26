@@ -16,5 +16,6 @@ defmodule Tory.Part.PartSpec do
     spec
     |> cast_assoc(:part)
     |> cast_assoc(:spec)
+    |> unique_constraint([:part_id, :spec_id])
   end
 end

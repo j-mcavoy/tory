@@ -21,6 +21,5 @@ defmodule Tory.Meta.Spec do
     spec
     |> cast(attrs, [:units, :value, :display_value, :attribute_id])
     |> cast_assoc(:attribute)
-    |> unique_constraint([:value, :attribute_id])
   end
 end

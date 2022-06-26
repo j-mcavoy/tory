@@ -21,7 +21,5 @@ defmodule Tory.Repo.Migrations.CreateAttributeSpecs do
 
       timestamps()
     end
-
-    create(unique_index(:specs, [:value, :attribute_id]))
   end
 end

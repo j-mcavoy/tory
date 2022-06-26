@@ -29,7 +29,7 @@ defmodule Tory.Part.Part do
 
     belongs_to :company, Company, on_replace: :update
     has_many :inventories, Inventory
-    many_to_many :specs, Spec, join_through: PartSpec, on_replace: :delete
+    many_to_many :specs, Spec, join_through: PartSpec
 
     timestamps()
   end
