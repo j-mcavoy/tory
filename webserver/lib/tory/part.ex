@@ -26,4 +26,10 @@ defmodule Tory.Part do
     |> P.changeset(attrs)
     |> Repo.insert()
   end
+
+  def update_part(%P{} = part, attrs) do
+    part
+    |> P.changeset(attrs)
+    |> Repo.update()
+  end
 end

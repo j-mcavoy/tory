@@ -19,6 +19,12 @@ defmodule Tory.Meta.Attribute do
     part_parameter
     |> cast(attrs, ~w(name shortname group)a)
     |> unique_constraint(~w(name shortname group)a)
+    |> cast_assoc(:specs)
+    # |> put_assoc(:specs, upsert_specs(attrs["specs"]))
     |> validate_required([:name])
+  end
+
+  def upsert_specs(specs) do
+    IO.inspect(specs)
   end
 end

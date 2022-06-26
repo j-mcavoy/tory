@@ -15,8 +15,8 @@ defmodule Tory.Company.Company do
     field(:is_verified, :boolean)
     field(:is_distributorapi, :boolean)
 
-    has_many :aliases, CompanyAlias, on_replace: :delete
-    has_many :parts, Part, on_replace: :delete
+    has_many :aliases, CompanyAlias
+    has_many :parts, Part
 
     timestamps()
   end

@@ -16,7 +16,7 @@ defmodule Tory.Company.CompanyAlias do
 
   def changeset(company_alias, attrs) do
     company_alias
-    |> cast(attrs, [:alias, :company_id])
+    |> cast(attrs, [:alias])
     |> cast_assoc(:company)
     |> validate_required([:alias])
     |> unique_constraint([:alias, :company])

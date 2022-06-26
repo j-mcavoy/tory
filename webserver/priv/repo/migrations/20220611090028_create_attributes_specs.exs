@@ -10,15 +10,18 @@ defmodule Tory.Repo.Migrations.CreateAttributeSpecs do
       timestamps()
     end
 
+    create(unique_index(:attributes, [:name, :shortname, :group]))
+
     create table(:specs) do
       add(:display_value, :string)
       add(:value, :string)
       add(:units, :string)
 
       add(:attribute_id, references(:attributes))
+
       timestamps()
     end
 
-    create(unique_index(:attributes, [:name, :shortname, :group]))
+    create(unique_index(:specs, [:value, :attribute_id]))
   end
 end

@@ -28,7 +28,7 @@ defmodule Tory.Part.Part do
     field(:barcode, :string)
 
     belongs_to :company, Company, on_replace: :update
-    has_many :inventories, Inventory, on_replace: :delete
+    has_many :inventories, Inventory
     many_to_many :specs, Spec, join_through: PartSpec
 
     timestamps()
@@ -48,26 +48,4 @@ defmodule Tory.Part.Part do
     |> cast_assoc(:inventories)
     |> unique_constraint(:octopart_id)
   end
-
-  def company_changeset(part, attrs \\ %{}) do
-    part
-    |> put_assoc(:company, Company)
-  end
-
-  defp get_or_insert_company(%{name: name} = company) do
-    IO.inspect(company)
-
-    with c <- Repo.get_by(Company, name: name) do
-      Company.changeset(%Company{}, c)
-    end
-    |> Repo.insert_or_update()
-  end
-
-  defp get_or_insert_spec(spec) do
-    Repo.get_by(Spec, name: spec.name, part: spec.part) ||
-      Spec.changeset(%Spec{}, spec)
-      |> Repo.insert_or_update()
-  end
-
-  defp get_or_insert_specs(specs), do: Enum.map(specs, &get_or_insert_spec(&1))
 end

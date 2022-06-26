@@ -5,8 +5,8 @@ defmodule Tory.Inventory.Inventory do
 
   schema "inventories" do
     field :count, :integer
-    belongs_to :part, Part, on_replace: :update
-    belongs_to :location, Location, on_replace: :update
+    belongs_to :part, Part
+    belongs_to :location, Location
 
     timestamps()
   end

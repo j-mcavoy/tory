@@ -19,9 +19,9 @@
         <td><a href={Routes.part_path(@conn, :show, part)}><img src={part.image}/></a></td>
         <td><%= link part.mpn, to: Routes.part_path(@conn, :show, part) %></td>
         <td><%= part.short_description %></td>
-        <td><%= link "manufacturer url", to: part.manufacturer_url %></td>
-        <td><%= link "datasheet", to: part.datasheet%></td>
-        <td><%= link part.octopart_id, to: part.octopart_url %></td>
+        <td><%= if part.manufacturer_url, do: link "manufacturer url", to: part.manufacturer_url%></td>
+        <td><%= if part.datasheet, do: link "datasheet", to: part.datasheet%></td>
+        <td><%= if part.octopart_url, do: link part.octopart_id, to: part.octopart_url  %></td>
 
         <td>
           <span><%= link "Show", to: Routes.part_path(@conn, :show, part) %></span>
