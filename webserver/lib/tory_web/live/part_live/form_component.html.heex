@@ -1,0 +1,46 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+  let={f}
+  for={@changeset}
+  id="part-form"
+  phx-target={@myself}
+  phx-change="validate"
+  phx-submit="save">
+
+  <%= label f, :id %>
+  <%= text_input f, :id %>
+  <%= error_tag f, :id %>
+
+  <%= label f, :mpn %>
+  <%= text_input f, :mpn %>
+  <%= error_tag f, :mpn %>
+
+  <%= label f, "Octopart URL" %>
+  <%= text_input f, :octopart_url %>
+  <%= error_tag f, :octopart_url %>
+
+  <%= label f, :barcode %>
+  <%= text_input f, :barcode %>
+  <%= error_tag f, :barcode %>
+
+  <div>
+    <%= submit "Save", phx_disable_with: "Saving..." %>
+  </div>
+  </.form>
+  <button phx-click="search_octopart" phx-value-part_id={@part.id}>Search Octopart</button>
+  <%= if not is_nil @octopart_search_results do %>
+    <table>
+      <%= for row <- @octopart_search_results do %>
+        <tr>
+          <td><img src={row.best_image.url} /></td>
+          <td>row.id</td>
+          <td>row.name</td>
+          <td>row.mpn</td>
+          <td>row.manufacturer</td>
+        </tr>
+        <% end %>
+    </table>
+  <% end %>
+</div>

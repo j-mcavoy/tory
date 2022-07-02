@@ -1,0 +1,67 @@
+<h1>Show part</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.part_show_path(@socket, :show, @part)}>
+    <.live_component
+      module={ToryWeb.PartLive.FormComponent}
+      id={@part.id}
+      title={@page_title}
+      action={@live_action}
+      part={@part}
+      return_to={Routes.part_show_path(@socket, :show, @part)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+  <li>
+    <strong>Mpn:</strong>
+    <%= @part.mpn %>
+  </li>
+  <li>
+    <strong>Datasheet:</strong>
+    <%= if @part.datasheet != nil do %>
+      <%= link @part.datasheet , to: @part.datasheet %>
+    <% end %>
+  </li>
+  <li>
+    <strong>Octopart id:</strong>
+    <%= @part.octopart_id %>
+  </li>
+</ul>
+
+<article>
+  <h3>Inventories</h3>
+  <table>
+    <tr>
+      <th>Location</th>
+      <th>Count</th>
+    </tr>
+    <%= for i <- @part.inventories do%>
+      <tr>
+        <td><%= link i.location.name, to: Routes.location_show_path @socket , :show, i.location %></td>
+        <td><%= i.count %></td>
+      </tr>
+    <% end %>
+  </table>
+</article>
+
+<article>
+  <h3>Specs</h3>
+  <table>
+    <tr>
+      <%= for s <- @part.specs do %>
+        <th><%= s.attribute.name %></th>
+      <% end %>
+    </tr>
+    <tr>
+      <%= for s <- @part.specs do %>
+        <td><%= s.display_value %></td>
+      <% end %>
+    </tr>
+  </table>
+</article>
+
+
+<span><%= live_patch "Edit", to: Routes.part_show_path(@socket, :edit, @part), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.part_index_path(@socket, :index) %></span>

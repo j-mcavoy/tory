@@ -32,4 +32,8 @@ defmodule Tory.Part do
     |> P.changeset(attrs)
     |> Repo.update()
   end
+
+  def delete_part(%P{} = part) do
+    Repo.delete(part)
+  end
 end

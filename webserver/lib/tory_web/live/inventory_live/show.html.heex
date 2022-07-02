@@ -1,0 +1,28 @@
+<h1>Show inventory</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.inventory_show_path(@socket, :show, @inventory)}>
+    <.live_component
+      module={ToryWeb.InventoryLive.FormComponent}
+      id={@inventory.id}
+      title={@page_title}
+      action={@live_action}
+      inventory={@inventory}
+      return_to={Routes.inventory_show_path(@socket, :show, @inventory)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Count:</strong>
+    <%= @inventory.count %>
+    <%= @inventory.part.mpn %>
+    <%= @inventory.location.name %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.inventory_show_path(@socket, :edit, @inventory), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.inventory_index_path(@socket, :index) %></span>

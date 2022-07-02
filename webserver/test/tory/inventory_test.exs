@@ -8,7 +8,7 @@ defmodule Tory.InventoryTest do
 
     import Tory.InventoryFixtures
 
-    @invalid_attrs %{description: nil, name: nil}
+    @invalid_attrs %{description: nil}
 
     test "list_locations/0 returns all locations" do
       location = location_fixture()
@@ -21,11 +21,10 @@ defmodule Tory.InventoryTest do
     end
 
     test "create_location/1 with valid data creates a location" do
-      valid_attrs = %{description: "some description", name: "some name"}
+      valid_attrs = %{description: "some description"}
 
       assert {:ok, %Location{} = location} = Inventory.create_location(valid_attrs)
       assert location.description == "some description"
-      assert location.name == "some name"
     end
 
     test "create_location/1 with invalid data returns error changeset" do
@@ -34,11 +33,10 @@ defmodule Tory.InventoryTest do
 
     test "update_location/2 with valid data updates the location" do
       location = location_fixture()
-      update_attrs = %{description: "some updated description", name: "some updated name"}
+      update_attrs = %{description: "some updated description"}
 
       assert {:ok, %Location{} = location} = Inventory.update_location(location, update_attrs)
       assert location.description == "some updated description"
-      assert location.name == "some updated name"
     end
 
     test "update_location/2 with invalid data returns error changeset" do
@@ -59,117 +57,57 @@ defmodule Tory.InventoryTest do
     end
   end
 
-  describe "parts" do
-    alias Tory.Inventory.Part
-
-    import Tory.InventoryFixtures
-
-    @invalid_attrs %{barcode: nil, datasheet: nil, mpn: nil, octopart_uid: nil}
-
-    test "list_parts/0 returns all parts" do
-      part = part_fixture()
-      assert Inventory.list_parts() == [part]
-    end
-
-    test "get_part!/1 returns the part with given id" do
-      part = part_fixture()
-      assert Inventory.get_part!(part.id) == part
-    end
-
-    test "create_part/1 with valid data creates a part" do
-      valid_attrs = %{barcode: "some barcode", datasheet: "some datasheet", mpn: "some mpn", octopart_uid: "some octopart_uid"}
-
-      assert {:ok, %Part{} = part} = Inventory.create_part(valid_attrs)
-      assert part.barcode == "some barcode"
-      assert part.datasheet == "some datasheet"
-      assert part.mpn == "some mpn"
-      assert part.octopart_uid == "some octopart_uid"
-    end
-
-    test "create_part/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Inventory.create_part(@invalid_attrs)
-    end
-
-    test "update_part/2 with valid data updates the part" do
-      part = part_fixture()
-      update_attrs = %{barcode: "some updated barcode", datasheet: "some updated datasheet", mpn: "some updated mpn", octopart_uid: "some updated octopart_uid"}
-
-      assert {:ok, %Part{} = part} = Inventory.update_part(part, update_attrs)
-      assert part.barcode == "some updated barcode"
-      assert part.datasheet == "some updated datasheet"
-      assert part.mpn == "some updated mpn"
-      assert part.octopart_uid == "some updated octopart_uid"
-    end
-
-    test "update_part/2 with invalid data returns error changeset" do
-      part = part_fixture()
-      assert {:error, %Ecto.Changeset{}} = Inventory.update_part(part, @invalid_attrs)
-      assert part == Inventory.get_part!(part.id)
-    end
-
-    test "delete_part/1 deletes the part" do
-      part = part_fixture()
-      assert {:ok, %Part{}} = Inventory.delete_part(part)
-      assert_raise Ecto.NoResultsError, fn -> Inventory.get_part!(part.id) end
-    end
-
-    test "change_part/1 returns a part changeset" do
-      part = part_fixture()
-      assert %Ecto.Changeset{} = Inventory.change_part(part)
-    end
-  end
-
-  describe "partlocations" do
-    alias Tory.Inventory.PartLocation
+  describe "xinventories" do
+    alias Tory.Inventory.XInventory
 
     import Tory.InventoryFixtures
 
     @invalid_attrs %{count: nil}
 
-    test "list_partlocations/0 returns all partlocations" do
-      part_location = part_location_fixture()
-      assert Inventory.list_partlocations() == [part_location]
+    test "list_xinventories/0 returns all xinventories" do
+      x_inventory = x_inventory_fixture()
+      assert Inventory.list_xinventories() == [x_inventory]
     end
 
-    test "get_part_location!/1 returns the part_location with given id" do
-      part_location = part_location_fixture()
-      assert Inventory.get_part_location!(part_location.id) == part_location
+    test "get_x_inventory!/1 returns the x_inventory with given id" do
+      x_inventory = x_inventory_fixture()
+      assert Inventory.get_x_inventory!(x_inventory.id) == x_inventory
     end
 
-    test "create_part_location/1 with valid data creates a part_location" do
+    test "create_x_inventory/1 with valid data creates a x_inventory" do
       valid_attrs = %{count: 42}
 
-      assert {:ok, %PartLocation{} = part_location} = Inventory.create_part_location(valid_attrs)
-      assert part_location.count == 42
+      assert {:ok, %XInventory{} = x_inventory} = Inventory.create_x_inventory(valid_attrs)
+      assert x_inventory.count == 42
     end
 
-    test "create_part_location/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Inventory.create_part_location(@invalid_attrs)
+    test "create_x_inventory/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Inventory.create_x_inventory(@invalid_attrs)
     end
 
-    test "update_part_location/2 with valid data updates the part_location" do
-      part_location = part_location_fixture()
+    test "update_x_inventory/2 with valid data updates the x_inventory" do
+      x_inventory = x_inventory_fixture()
       update_attrs = %{count: 43}
 
-      assert {:ok, %PartLocation{} = part_location} = Inventory.update_part_location(part_location, update_attrs)
-      assert part_location.count == 43
+      assert {:ok, %XInventory{} = x_inventory} = Inventory.update_x_inventory(x_inventory, update_attrs)
+      assert x_inventory.count == 43
     end
 
-    test "update_part_location/2 with invalid data returns error changeset" do
-      part_location = part_location_fixture()
-      assert {:error, %Ecto.Changeset{}} = Inventory.update_part_location(part_location, @invalid_attrs)
-      assert part_location == Inventory.get_part_location!(part_location.id)
+    test "update_x_inventory/2 with invalid data returns error changeset" do
+      x_inventory = x_inventory_fixture()
+      assert {:error, %Ecto.Changeset{}} = Inventory.update_x_inventory(x_inventory, @invalid_attrs)
+      assert x_inventory == Inventory.get_x_inventory!(x_inventory.id)
     end
 
-    test "delete_part_location/1 deletes the part_location" do
-      part_location = part_location_fixture()
-      assert {:ok, %PartLocation{}} = Inventory.delete_part_location(part_location)
-      assert_raise Ecto.NoResultsError, fn -> Inventory.get_part_location!(part_location.id) end
+    test "delete_x_inventory/1 deletes the x_inventory" do
+      x_inventory = x_inventory_fixture()
+      assert {:ok, %XInventory{}} = Inventory.delete_x_inventory(x_inventory)
+      assert_raise Ecto.NoResultsError, fn -> Inventory.get_x_inventory!(x_inventory.id) end
     end
 
-    test "change_part_location/1 returns a part_location changeset" do
-      part_location = part_location_fixture()
-      assert %Ecto.Changeset{} = Inventory.change_part_location(part_location)
+    test "change_x_inventory/1 returns a x_inventory changeset" do
+      x_inventory = x_inventory_fixture()
+      assert %Ecto.Changeset{} = Inventory.change_x_inventory(x_inventory)
     end
   end
 end

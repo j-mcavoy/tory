@@ -19,9 +19,29 @@ defmodule ToryWeb.Router do
 
     get "/", PageController, :index
     resources "/parameters", ParameterController
-    resources "/parts", PartController
-    resources "/locations", LocationController
-    resources "/inventories", InventoryController
+    # resources "/parts", PartController
+    # resources "/locations", LocationController
+    # resources "/inventories", InventoryController
+
+    live("/partslive", PartLive)
+
+    live "/parts", PartLive.Index, :index
+    live "/parts/new", PartLive.Index, :new
+    live "/parts/:id/edit", PartLive.Index, :edit
+    live "/parts/:id", PartLive.Show, :show
+    live "/parts/:id/show/edit", PartLive.Show, :edit
+
+    live "/locations", LocationLive.Index, :index
+    live "/locations/new", LocationLive.Index, :new
+    live "/locations/:id/edit", LocationLive.Index, :edit
+    live "/locations/:id", LocationLive.Show, :show
+    live "/locations/:id/show/edit", LocationLive.Show, :edit
+
+    live "/inventories", InventoryLive.Index, :index
+    live "/inventories/new", InventoryLive.Index, :new
+    live "/inventories/:id/edit", InventoryLive.Index, :edit
+    live "/inventories/:id", InventoryLive.Show, :show
+    live "/inventories/:id/show/edit", InventoryLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

@@ -1,0 +1,49 @@
+<h1>Listing Parts</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.part_index_path(@socket, :index)}>
+    <.live_component
+      module={ToryWeb.PartLive.FormComponent}
+      id={@part.id || :new}
+      title={@page_title}
+      action={@live_action}
+      part={@part}
+      return_to={Routes.part_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Mpn</th>
+      <th>Description</th>
+      <th>Manufacturer URL</th>
+      <th>Datasheet</th>
+      <th>Octopart Link</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="parts">
+    <%= for part <- @parts do %>
+      <tr>
+        <td><a href={Routes.part_show_path(@socket, :show, part)}><img src={part.image}/></a></td>
+        <td><%= link part.mpn, to: Routes.part_show_path(@socket, :show, part) %></td>
+        <td><%= part.short_description %></td>
+        <td><%= if part.manufacturer_url, do: link "manufacturer url", to: part.manufacturer_url%></td>
+        <td><%= if part.datasheet, do: link "datasheet", to: part.datasheet%></td>
+        <td><%= if part.octopart_url, do: link part.octopart_id, to: part.octopart_url  %></td>
+        <td>
+          <span><%= live_redirect "Show", to: Routes.part_show_path(@socket, :show, part) %></span>
+          <span><%= live_patch "Edit", to: Routes.part_index_path(@socket, :edit, part) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: part.id, data: [confirm: "Are you sure?"] %></span>
+          <span><button phx-click="populate_octopart" phx-value-part_id={part.id}>Populate from Octopart</button></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New part", to: Routes.part_index_path(@socket, :new) %></span>

@@ -1,7 +1,8 @@
 defmodule Tory.Inventory.Inventory do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Tory.Inventory.{Part, Location}
+  alias Tory.Part.Part
+  alias Tory.Inventory.Location
 
   schema "inventories" do
     field :count, :integer

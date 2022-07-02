@@ -1,5 +1,6 @@
 defmodule Tory.Octopart do
-  alias Tory.Part.{Part, PartSpec, AkaMpn}
+  alias Tory.Part.{Part, PartSpec}
+  alias Tory.Company.CompanyAlias
   alias Tory.Meta.{Attribute, Spec}
   alias Tory.Company.Company
   alias Neuron
@@ -10,13 +11,13 @@ defmodule Tory.Octopart do
   @octopart_endpoint 'https://octopart.com/api/v4/endpoint'
 
   def populate_octopart_data(%Part{} = part) do
-    fetch_meta_from_octopart(part)
-    |> parse_octopart_json
-    |> parse_octopart_part_query(part.id)
+    [first_part | _] =
+      fetch_meta_from_octopart(part)
+      |> parse_octopart_json
+
+    parse_octopart_part_query(first_part, part.id)
     |> insert_octopart_data(part)
   end
-
-  # @options [ssl: [verify: :verify_none]]
 
   defp octopart_api_fetch(query, %{} = vars) do
     Neuron.query(
@@ -27,12 +28,12 @@ defmodule Tory.Octopart do
     )
   end
 
-  def fetch_meta_from_octopart(%Part{octopart_id: nil, mpn: mpn}) do
+  def fetch_meta_from_octopart(%Part{octopart_id: nil, octopart_url: nil, mpn: mpn}) do
     Neuron.Config.set(parse_options: [keys: :atoms])
 
     """
     query($q: String) {
-      search(q: $q, limit: 1) {
+      search(q: $q, limit: 2) {
         results {
           part {
             avg_avail
@@ -85,8 +86,8 @@ defmodule Tory.Octopart do
     |> octopart_api_fetch(%{id: octopart_id})
   end
 
-  def parse_octopart_json({:ok, %{body: %{data: %{search: %{results: [result | _]}}}}}),
-    do: result
+  def parse_octopart_json({:ok, %{body: %{data: %{search: %{results: [results]}}}}}),
+    do: results
 
   def parse_octopart_json({:ok, %{body: %{data: %{parts: [result | _]}}}}),
     do: result
@@ -146,8 +147,6 @@ defmodule Tory.Octopart do
       end
     )
   end
-
-  alias Tory.Company.CompanyAlias
 
   def parse_octopart_company_query(%{aliases: aliases} = company) do
     aliases =

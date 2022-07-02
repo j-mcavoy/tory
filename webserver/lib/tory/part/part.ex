@@ -46,6 +46,5 @@ defmodule Tory.Part.Part do
     |> cast_assoc(:company)
     |> cast_assoc(:specs)
     |> cast_assoc(:inventories)
-    |> unique_constraint(:octopart_id)
   end
 end

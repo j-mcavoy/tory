@@ -33,8 +33,8 @@ defmodule Tory.Repo.Migrations.CreateParts do
     create(unique_index(:aka_mpn, [:mpn, :part_id]))
 
     create table(:part_specs) do
-      add(:part_id, references(:parts))
-      add(:spec_id, references(:specs))
+      add(:part_id, references(:parts, on_delete: :delete_all))
+      add(:spec_id, references(:specs, on_delete: :delete_all))
       timestamps()
     end
 
