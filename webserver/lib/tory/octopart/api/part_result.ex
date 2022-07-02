@@ -17,6 +17,8 @@ defmodule Tory.Octopart.Api.PartResult do
     :specs
   ])
 
+  alias __MODULE__.{Spec, Company}
+
   @type t :: %__MODULE__{
           id: integer,
           name: String.t(),
@@ -31,12 +33,36 @@ defmodule Tory.Octopart.Api.PartResult do
           octopart_url: String.t(),
           best_datasheet: String.t(),
           best_image: String.t(),
-          manufacturer: String.t(),
+          manufacturer: Company.t(),
           specs: [Spec.t()]
         }
 
+  defmodule __MODULE__.Company do
+    defstruct [
+      :id,
+      :name,
+      :homepage_url,
+      :is_verified,
+      :is_distributorapi,
+      :display_flag,
+      :slug,
+      :aliases
+    ]
+
+    @type t :: %__MODULE__{
+            id: integer,
+            name: String.t(),
+            homepage_url: String.t(),
+            is_verified: boolean,
+            is_distributorapi: boolean,
+            display_flag: String.t(),
+            slug: String.t(),
+            aliases: [String.t()]
+          }
+  end
+
   defmodule __MODULE__.Spec do
-    alias Octopart.PartResult.Attribute
+    alias __MODULE__.Attribute
     defstruct [:display_value, :units, :value, :attribute]
 
     @type t :: %__MODULE__{
@@ -45,15 +71,15 @@ defmodule Tory.Octopart.Api.PartResult do
             value: String.t(),
             attribute: Attribute.t()
           }
-  end
 
-  defmodule __MODULE__.Attribute do
-    defstruct [:name, :shortname, :group]
+    defmodule __MODULE__.Attribute do
+      defstruct [:name, :shortname, :group]
 
-    @type t :: %__MODULE__{
-            name: Sting.t(),
-            shortname: String.t(),
-            group: String.t()
-          }
+      @type t :: %__MODULE__{
+              name: Sting.t(),
+              shortname: String.t(),
+              group: String.t()
+            }
+    end
   end
 end

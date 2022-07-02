@@ -1,25 +1,31 @@
 defmodule Tory.Octopart do
-  alias Tory.Part.{Part, PartSpec}
+  alias Neuron
+  alias Tory.Company.Company
   alias Tory.Company.CompanyAlias
   alias Tory.Meta.{Attribute, Spec}
-  alias Tory.Company.Company
-  alias Neuron
+  alias Tory.Octopart.Api.PartResult
+  alias Tory.Part.{Part, PartSpec}
   alias Tory.Repo
 
   import Tory.Octopart.Api
 
   @spec populate_octopart_data(%Part{}) :: {:ok, %Part{}} | {:error, any}
   def populate_octopart_data(%Part{} = part) do
-    case fetch_meta_from_octopart(part) do
+    case search_octopart(part) do
       {:ok, [first_part | _]} -> insert_octopart_data(first_part, part)
       resp -> resp
     end
   end
 
-  def fetch_meta_from_octopart(%Part{octopart_id: nil, mpn: mpn}) do
+  @spec search_octopart(%Part{octopart_id: nil}) :: [PartResult]
+  def search_octopart(%Part{octopart_id: nil, mpn: _mpn} = part), do: search_octopart(part, 1)
+
+  @spec search_octopart(%Part{octopart_id: nil, mpn: String.t()}, integer) ::
+          {:ok, [PartResult]} | {:error, any}
+  def search_octopart(%Part{octopart_id: nil, mpn: mpn}, limit) do
     """
-    query($q: String) {
-      search(q: $q, limit: 2) {
+    query($q: String, $limit: Int) {
+      search(q: $q, limit: $limit) {
         results {
           part {
             avg_avail
@@ -41,10 +47,11 @@ defmodule Tory.Octopart do
             specs { display_value units value attribute {name shortname group} }
     } } } }
     """
-    |> octopart_api_fetch(%{q: mpn})
+    |> octopart_api_fetch(%{q: mpn, limit: limit})
   end
 
-  def fetch_meta_from_octopart(%Part{octopart_id: octopart_id}) do
+  @spec search_octopart(Part) :: [PartResult]
+  def search_octopart(%Part{octopart_id: octopart_id}) when not is_nil(octopart_id) do
     """
       query($id: String!) {
         parts(ids: [$id]) {
@@ -70,7 +77,57 @@ defmodule Tory.Octopart do
     |> octopart_api_fetch(%{id: octopart_id})
   end
 
-  def parse_octopart_specs_query(specs, part_id) do
+  @spec parse_part_result(PartResult, integer) :: Part
+  defp parse_part_result(
+         %PartResult{
+           id: octopart_id,
+           name: name,
+           mpn: mpn,
+           short_description: short_description,
+           aka_mpns: aka_mpns,
+           generic_mpn: generic_mpn,
+           avg_avail: avg_avail,
+           total_avail: total_avail,
+           slug: slug,
+           manufacturer_url: manufacturer_url,
+           octopart_url: octopart_url,
+           best_datasheet: %{url: datasheet},
+           best_image: %{url: image},
+           manufacturer: company,
+           specs: specs
+         },
+         part_id
+       ) do
+    mpns = Enum.map(aka_mpns, &%{part_id: part_id, mpn: &1})
+
+    specs = parse_specs(specs, part_id)
+
+    company = parse_company(company)
+
+    part = %{
+      id: part_id,
+      octopart_id: octopart_id,
+      name: name,
+      short_description: short_description,
+      generic_mpn: generic_mpn,
+      mpn: mpn,
+      aka_mpns: mpns,
+      octopart_url: octopart_url,
+      manufacturer_url: manufacturer_url,
+      datasheet: datasheet,
+      image: image,
+      avg_avail: avg_avail,
+      total_avail: total_avail,
+      slug: slug,
+      specs: specs,
+      company: company
+    }
+
+    part
+  end
+
+  @spec parse_specs([PartResult.Spec.t()], integer) :: [Spec]
+  def parse_specs([%PartResult.Spec{}] = specs, part_id) do
     Enum.map(
       specs,
       fn %{attribute: a} = s ->
@@ -126,7 +183,7 @@ defmodule Tory.Octopart do
     )
   end
 
-  def parse_octopart_company_query(%{aliases: aliases} = company) do
+  def parse_company(%{aliases: aliases} = company) do
     aliases =
       Enum.map(aliases, fn a ->
         IO.inspect(a)
@@ -210,56 +267,6 @@ defmodule Tory.Octopart do
           },
           part_id
         )
-
-  def parse_octopart_part_query(
-        %{
-          part: %{
-            id: octopart_id,
-            name: name,
-            mpn: mpn,
-            short_description: short_description,
-            aka_mpns: aka_mpns,
-            generic_mpn: generic_mpn,
-            avg_avail: avg_avail,
-            total_avail: total_avail,
-            slug: slug,
-            manufacturer_url: manufacturer_url,
-            octopart_url: octopart_url,
-            best_datasheet: %{url: datasheet},
-            best_image: %{url: image},
-            manufacturer: company,
-            specs: specs
-          }
-        },
-        part_id
-      ) do
-    mpns = Enum.map(aka_mpns, &%{part_id: part_id, mpn: &1})
-
-    specs = parse_octopart_specs_query(specs, part_id)
-
-    company = parse_octopart_company_query(company)
-
-    part = %{
-      id: part_id,
-      octopart_id: octopart_id,
-      name: name,
-      short_description: short_description,
-      generic_mpn: generic_mpn,
-      mpn: mpn,
-      aka_mpns: mpns,
-      octopart_url: octopart_url,
-      manufacturer_url: manufacturer_url,
-      datasheet: datasheet,
-      image: image,
-      avg_avail: avg_avail,
-      total_avail: total_avail,
-      slug: slug,
-      specs: specs,
-      company: company
-    }
-
-    part
-  end
 
   def insert_octopart_data(octopart, old_part) do
     change = Part.changeset(old_part, octopart)
