@@ -6,28 +6,14 @@ defmodule Tory.Octopart do
   alias Neuron
   alias Tory.Repo
 
-  def octopart_token, do: System.get_env("OCTOPART_APIKEY")
+  import Tory.Octopart.Api
 
-  @octopart_endpoint 'https://octopart.com/api/v4/endpoint'
-
+  @spec populate_octopart_data(%Part{}) :: {:ok, %Part{}} | {:error, any}
   def populate_octopart_data(%Part{} = part) do
-    [first_part | _] =
-      fetch_meta_from_octopart(part)
-      |> parse_octopart_json
-
-    parse_octopart_part_query(first_part, part.id)
-    |> insert_octopart_data(part)
-  end
-
-  defp octopart_api_fetch(query, %{} = vars) do
-    Neuron.Config.set(parse_options: [keys: :atoms])
-
-    Neuron.query(
-      query,
-      vars,
-      url: @octopart_endpoint,
-      headers: [token: octopart_token()]
-    )
+    case fetch_meta_from_octopart(part) do
+      {:ok, [first_part | _]} -> insert_octopart_data(first_part, part)
+      resp -> resp
+    end
   end
 
   def fetch_meta_from_octopart(%Part{octopart_id: nil, mpn: mpn}) do
@@ -83,12 +69,6 @@ defmodule Tory.Octopart do
     """
     |> octopart_api_fetch(%{id: octopart_id})
   end
-
-  def parse_octopart_json({:ok, %{body: %{data: %{search: %{results: [results]}}}}}),
-    do: results
-
-  def parse_octopart_json({:ok, %{body: %{data: %{parts: [result | _]}}}}),
-    do: result
 
   def parse_octopart_specs_query(specs, part_id) do
     Enum.map(
@@ -204,7 +184,7 @@ defmodule Tory.Octopart do
           best_image: %{url: image},
           manufacturer: company,
           specs: specs
-        } = part,
+        },
         part_id
       ),
       do:
