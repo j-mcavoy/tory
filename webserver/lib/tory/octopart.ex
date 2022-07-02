@@ -17,8 +17,35 @@ defmodule Tory.Octopart do
     end
   end
 
-  @spec search_octopart(%Part{octopart_id: nil}) :: [PartResult]
+  @spec search_octopart(%Part{octopart_id: nil}) :: {:ok, [PartResult]} | {:error, any}
   def search_octopart(%Part{octopart_id: nil, mpn: _mpn} = part), do: search_octopart(part, 1)
+
+  @spec search_octopart(Part) :: {:ok, [PartResult]} | {:error, any}
+  def search_octopart(%Part{octopart_id: octopart_id}) do
+    """
+      query($id: String!) {
+        parts(ids: [$id]) {
+          avg_avail
+          total_avail
+          estimated_factory_lead_days
+          free_sample_url
+          id
+          mpn
+          slug
+          name
+          short_description
+          aka_mpns
+          generic_mpn
+          manufacturer_url
+          octopart_url
+          best_datasheet { url }
+          best_image { url }
+          manufacturer { id name homepage_url is_verified is_distributorapi display_flag slug aliases }
+          specs { display_value units value attribute { name shortname group } }
+    } }
+    """
+    |> octopart_api_fetch(%{id: octopart_id})
+  end
 
   @spec search_octopart(%Part{octopart_id: nil, mpn: String.t()}, integer) ::
           {:ok, [PartResult]} | {:error, any}
@@ -48,33 +75,6 @@ defmodule Tory.Octopart do
     } } } }
     """
     |> octopart_api_fetch(%{q: mpn, limit: limit})
-  end
-
-  @spec search_octopart(Part) :: [PartResult]
-  def search_octopart(%Part{octopart_id: octopart_id}) when not is_nil(octopart_id) do
-    """
-      query($id: String!) {
-        parts(ids: [$id]) {
-          avg_avail
-          total_avail
-          estimated_factory_lead_days
-          free_sample_url
-          id
-          mpn
-          slug
-          name
-          short_description
-          aka_mpns
-          generic_mpn
-          manufacturer_url
-          octopart_url
-          best_datasheet { url }
-          best_image { url }
-          manufacturer { id name homepage_url is_verified is_distributorapi display_flag slug aliases }
-          specs { display_value units value attribute { name shortname group } }
-    } }
-    """
-    |> octopart_api_fetch(%{id: octopart_id})
   end
 
   @spec parse_part_result(PartResult, integer) :: Part

@@ -1,7 +1,7 @@
 defmodule Tory.OctopartTest do
   use Tory.DataCase
 
-  describe "octopart" do
+  describe "octopart searching" do
     import Tory.Octopart
     alias Tory.Part.Part
     alias Tory.Octopart.Api.PartResult
