@@ -20,6 +20,8 @@ defmodule Tory.Octopart do
   end
 
   defp octopart_api_fetch(query, %{} = vars) do
+    Neuron.Config.set(parse_options: [keys: :atoms])
+
     Neuron.query(
       query,
       vars,
@@ -28,9 +30,7 @@ defmodule Tory.Octopart do
     )
   end
 
-  def fetch_meta_from_octopart(%Part{octopart_id: nil, octopart_url: nil, mpn: mpn}) do
-    Neuron.Config.set(parse_options: [keys: :atoms])
-
+  def fetch_meta_from_octopart(%Part{octopart_id: nil, mpn: mpn}) do
     """
     query($q: String) {
       search(q: $q, limit: 2) {
@@ -59,8 +59,6 @@ defmodule Tory.Octopart do
   end
 
   def fetch_meta_from_octopart(%Part{octopart_id: octopart_id}) do
-    Neuron.Config.set(parse_options: [keys: :atoms])
-
     """
       query($id: String!) {
         parts(ids: [$id]) {
