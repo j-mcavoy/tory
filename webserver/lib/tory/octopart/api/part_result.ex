@@ -17,7 +17,7 @@ defmodule Tory.Octopart.Api.PartResult do
     :specs
   ])
 
-  alias __MODULE__.{Spec, Company}
+  alias __MODULE__.{Spec, Spec.Attribute, Company}
 
   @type t :: %__MODULE__{
           id: integer,

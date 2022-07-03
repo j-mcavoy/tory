@@ -77,29 +77,30 @@ defmodule Tory.Octopart do
     |> octopart_api_fetch(%{q: mpn, limit: limit})
   end
 
-  @spec parse_part_result(PartResult, integer) :: Part
-  defp parse_part_result(
-         %PartResult{
-           id: octopart_id,
-           name: name,
-           mpn: mpn,
-           short_description: short_description,
-           aka_mpns: aka_mpns,
-           generic_mpn: generic_mpn,
-           avg_avail: avg_avail,
-           total_avail: total_avail,
-           slug: slug,
-           manufacturer_url: manufacturer_url,
-           octopart_url: octopart_url,
-           best_datasheet: %{url: datasheet},
-           best_image: %{url: image},
-           manufacturer: company,
-           specs: specs
-         },
-         part_id
-       ) do
+  @spec parse_part_result(PartResult.t(), integer) :: Part.t()
+  def parse_part_result(
+        %PartResult{
+          id: octopart_id,
+          name: name,
+          mpn: mpn,
+          short_description: short_description,
+          aka_mpns: aka_mpns,
+          generic_mpn: generic_mpn,
+          avg_avail: avg_avail,
+          total_avail: total_avail,
+          slug: slug,
+          manufacturer_url: manufacturer_url,
+          octopart_url: octopart_url,
+          best_datasheet: %{url: datasheet},
+          best_image: %{url: image},
+          manufacturer: %PartResult.Company{} = company,
+          specs: specs
+        },
+        part_id
+      ) do
     mpns = Enum.map(aka_mpns, &%{part_id: part_id, mpn: &1})
 
+    inspect(specs)
     specs = parse_specs(specs, part_id)
 
     company = parse_company(company)
@@ -127,7 +128,7 @@ defmodule Tory.Octopart do
   end
 
   @spec parse_specs([PartResult.Spec.t()], integer) :: [Spec]
-  def parse_specs([%PartResult.Spec{}] = specs, part_id) do
+  def parse_specs(specs, part_id) do
     Enum.map(
       specs,
       fn %{attribute: a} = s ->
@@ -183,7 +184,7 @@ defmodule Tory.Octopart do
     )
   end
 
-  def parse_company(%{aliases: aliases} = company) do
+  def parse_company(%PartResult.Company{aliases: aliases} = company) do
     aliases =
       Enum.map(aliases, fn a ->
         IO.inspect(a)
