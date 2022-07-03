@@ -49,7 +49,7 @@ defmodule Tory.Octopart do
 
   @spec search_octopart(%Part{octopart_id: nil, mpn: String.t()}, integer) ::
           {:ok, [PartResult]} | {:error, any}
-  def search_octopart(%Part{octopart_id: nil, mpn: mpn}, limit) do
+  def search_octopart(%Part{octopart_id: nil, mpn: mpn}, limit) when limit > 0 do
     """
     query($q: String, $limit: Int) {
       search(q: $q, limit: $limit) {
