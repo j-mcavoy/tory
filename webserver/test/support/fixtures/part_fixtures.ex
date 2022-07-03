@@ -5,16 +5,16 @@ defmodule Tory.PartFixtures do
   """
 
   @doc """
-  Generate a x_part_x.
+  Generate a part.
   """
-  def x_part_x_fixture(attrs \\ %{}) do
-    {:ok, x_part_x} =
+  def part_fixture(attrs \\ %{}) do
+    {:ok, part} =
       attrs
       |> Enum.into(%{
         mpn: "some mpn"
       })
-      |> Tory.Part.create_x_part_x()
+      |> Tory.Part.create_part()
 
-    x_part_x
+    Tory.Part.get_part_preloaded!(part.id)
   end
 end

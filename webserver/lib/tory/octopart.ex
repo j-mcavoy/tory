@@ -1,20 +1,18 @@
 defmodule Tory.Octopart do
+  import Tory.Octopart.Api
+
   alias Neuron
   alias Tory.Company.Company
   alias Tory.Company.CompanyAlias
   alias Tory.Meta.{Attribute, Spec}
   alias Tory.Octopart.Api.PartResult
   alias Tory.Part.{Part, PartSpec}
+
   alias Tory.Repo
-
-  import Tory.Octopart.Api
-
-  @spec populate_octopart_data(%Part{}) :: {:ok, %Part{}} | {:error, any}
-  def populate_octopart_data(%Part{} = part) do
-    case search_octopart(part) do
-      {:ok, [first_part | _]} -> insert_octopart_data(first_part, part)
-      resp -> resp
-    end
+  @spec insert_part_result(PartResult, Part) :: Part
+  def insert_part_result(%PartResult{} = part_result, %Part{} = old_part) do
+    change = Part.changeset(old_part, Map.from_struct(part_result))
+    Repo.insert_or_update(change)
   end
 
   @spec search_octopart(%Part{octopart_id: nil}) :: {:ok, [PartResult]} | {:error, any}
@@ -268,11 +266,4 @@ defmodule Tory.Octopart do
           },
           part_id
         )
-
-  def insert_octopart_data(octopart, old_part) do
-    change = Part.changeset(old_part, octopart)
-    IO.inspect(change)
-
-    Repo.insert_or_update(change)
-  end
 end

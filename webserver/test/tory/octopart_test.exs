@@ -52,7 +52,16 @@ defmodule Tory.OctopartTest do
   describe "octopart parsing" do
     test "parse part" do
       part = parse_part_result(OctopartFixtures.part_result_fixture(), 1)
-      IO.inspect(part)
+    end
+  end
+
+  describe "octopart insert" do
+    @tag insert: true
+    @tag api: true
+    test "insert part_result" do
+      part = Tory.PartFixtures.part_fixture() |> Repo.prel()
+      {:ok, [result | _]} = search_octopart(part, 1)
+      insert_part_result(result, part)
     end
   end
 end
