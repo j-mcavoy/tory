@@ -57,57 +57,58 @@ defmodule Tory.InventoryTest do
     end
   end
 
-  describe "xinventories" do
-    alias Tory.Inventory.XInventory
+  describe "inventories" do
+    alias Tory.Inventory.Inventory
 
     import Tory.InventoryFixtures
 
     @invalid_attrs %{count: nil}
 
-    test "list_xinventories/0 returns all xinventories" do
-      x_inventory = x_inventory_fixture()
-      assert Inventory.list_xinventories() == [x_inventory]
+    test "list_inventories/0 returns all inventories" do
+      inventory = inventory_fixture()
+      assert Inventory.list_inventories() == [inventory]
     end
 
-    test "get_x_inventory!/1 returns the x_inventory with given id" do
-      x_inventory = x_inventory_fixture()
-      assert Inventory.get_x_inventory!(x_inventory.id) == x_inventory
+    test "get_inventory!/1 returns the inventory with given id" do
+      inventory = inventory_fixture()
+      assert Inventory.get_inventory!(inventory.id) == inventory
     end
 
-    test "create_x_inventory/1 with valid data creates a x_inventory" do
+    test "create_inventory/1 with valid data creates a inventory" do
       valid_attrs = %{count: 42}
 
-      assert {:ok, %XInventory{} = x_inventory} = Inventory.create_x_inventory(valid_attrs)
-      assert x_inventory.count == 42
+      assert {:ok, %inventory{} = inventory} = Inventory.create_inventory(valid_attrs)
+      assert inventory.count == 42
     end
 
-    test "create_x_inventory/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Inventory.create_x_inventory(@invalid_attrs)
+    test "create_inventory/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Inventory.create_inventory(@invalid_attrs)
     end
 
-    test "update_x_inventory/2 with valid data updates the x_inventory" do
-      x_inventory = x_inventory_fixture()
+    test "update_inventory/2 with valid data updates the inventory" do
+      inventory = inventory_fixture()
       update_attrs = %{count: 43}
 
-      assert {:ok, %XInventory{} = x_inventory} = Inventory.update_x_inventory(x_inventory, update_attrs)
-      assert x_inventory.count == 43
+      assert {:ok, %inventory{} = inventory} = Inventory.update_inventory(inventory, update_attrs)
+
+      assert inventory.count == 43
     end
 
-    test "update_x_inventory/2 with invalid data returns error changeset" do
-      x_inventory = x_inventory_fixture()
-      assert {:error, %Ecto.Changeset{}} = Inventory.update_x_inventory(x_inventory, @invalid_attrs)
-      assert x_inventory == Inventory.get_x_inventory!(x_inventory.id)
+    test "update_inventory/2 with invalid data returns error changeset" do
+      inventory = inventory_fixture()
+      assert {:error, %Ecto.Changeset{}} = Inventory.update_inventory(inventory, @invalid_attrs)
+      assert inventory == Inventory.get_inventory!(inventory.id)
     end
 
-    test "delete_x_inventory/1 deletes the x_inventory" do
-      x_inventory = x_inventory_fixture()
-      assert {:ok, %XInventory{}} = Inventory.delete_x_inventory(x_inventory)
-      assert_raise Ecto.NoResultsError, fn -> Inventory.get_x_inventory!(x_inventory.id) end
+    test "delete_inventory/1 deletes the inventory" do
+      inventory = inventory_fixture()
+      assert {:ok, %inventory{}} = Inventory.delete_inventory(inventory)
+      assert_raise Ecto.NoResultsError, fn -> Inventory.get_inventory!(inventory.id) end
     end
 
-    test "change_x_inventory/1 returns a x_inventory changeset" do
-      x_inventory = x_inventory_fixture()
-      assert %Ecto.Changeset{} = Inventory.change_x_inventory(x_inventory)
+    test "change_inventory/1 returns a inventory changeset" do
+      inventory = inventory_fixture()
+      assert %Ecto.Changeset{} = Inventory.change_inventory(inventory)
     end
   end
 end

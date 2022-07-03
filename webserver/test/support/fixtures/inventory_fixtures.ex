@@ -66,30 +66,16 @@ defmodule Tory.InventoryFixtures do
   end
 
   @doc """
-  Generate a location.
-  """
-  def location_fixture(attrs \\ %{}) do
-    {:ok, location} =
-      attrs
-      |> Enum.into(%{
-        description: "some description"
-      })
-      |> Tory.Inventory.create_location()
-
-    location
-  end
-
-  @doc """
   Generate a x_inventory.
   """
-  def x_inventory_fixture(attrs \\ %{}) do
-    {:ok, x_inventory} =
+  def inventory_fixture(attrs \\ %{}) do
+    {:ok, inventory} =
       attrs
       |> Enum.into(%{
         count: 42
       })
-      |> Tory.Inventory.create_x_inventory()
+      |> Tory.Inventory.create_inventory()
 
-    x_inventory
+    inventory
   end
 end
