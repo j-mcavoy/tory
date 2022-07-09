@@ -29,7 +29,7 @@ defmodule ToryWeb.Router do
     live "/parts/new", PartLive.Index, :new
     live "/parts/:id/edit", PartLive.Index, :edit
     live "/parts/:id", PartLive.Show, :show
-    live "/parts/:id/show/edit", PartLive.Show, :edit
+    live "/parts/:id/octopart_search", PartLive.OctopartSearch, :octopart_search
 
     live "/locations", LocationLive.Index, :index
     live "/locations/new", LocationLive.Index, :new

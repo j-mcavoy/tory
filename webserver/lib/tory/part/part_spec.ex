@@ -6,8 +6,8 @@ defmodule Tory.Part.PartSpec do
   alias Tory.Meta.Spec
 
   schema "part_specs" do
-    belongs_to :spec, Spec
-    belongs_to :part, Part
+    belongs_to :spec, Spec, on_replace: :delete
+    belongs_to :part, Part, on_replace: :delete
 
     timestamps()
   end

@@ -30,17 +30,4 @@
   </div>
   </.form>
   <button phx-click="search_octopart" phx-value-part_id={@part.id}>Search Octopart</button>
-  <%= if not is_nil @octopart_search_results do %>
-    <table>
-      <%= for row <- @octopart_search_results do %>
-        <tr>
-          <td><img src={row.best_image.url} /></td>
-          <td>row.id</td>
-          <td>row.name</td>
-          <td>row.mpn</td>
-          <td>row.manufacturer</td>
-        </tr>
-        <% end %>
-    </table>
-  <% end %>
 </div>

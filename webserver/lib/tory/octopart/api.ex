@@ -1,6 +1,7 @@
 defmodule Tory.Octopart.Api do
   alias Tory.Octopart.Api.PartResult
   alias Tory.Octopart.Api.PartResult.{Spec, Company}
+  alias Tory.Octopart.Api.PartResult.Company.Alias
   alias Tory.Octopart.Api.PartResult.Spec.Attribute
   def octopart_token, do: System.get_env("OCTOPART_APIKEY")
 
@@ -20,7 +21,9 @@ defmodule Tory.Octopart.Api do
              url: @octopart_endpoint,
              headers: [token: octopart_token()]
            ) do
-      {:ok, parse_octopart_json(%{body: resp.body})}
+      require IEx
+      pr = parse_octopart_json(%{body: resp.body})
+      {:ok, parse_part_results(pr)}
     else
       {:error, e} -> {:error, e}
     end
@@ -56,7 +59,16 @@ defmodule Tory.Octopart.Api do
 
         part_result = Map.merge(%PartResult{}, p)
         company = Map.merge(%Company{}, p.manufacturer)
-        %PartResult{part_result | specs: specs, manufacturer: company}
+        company = %{company | aliases: Enum.map(company.aliases, &%Alias{alias: &1})}
+
+        %PartResult{
+          part_result
+          | specs: specs,
+            company: company,
+            datasheet: p.best_datasheet.url,
+            image: p.best_image.url,
+            avg_avail: p.avg_avail * 1.0
+        }
       end
     )
   end

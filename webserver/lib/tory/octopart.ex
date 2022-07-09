@@ -9,10 +9,13 @@ defmodule Tory.Octopart do
   alias Tory.Part.{Part, PartSpec}
 
   alias Tory.Repo
-  @spec insert_part_result(PartResult, Part) :: Part
+  @spec insert_part_result(PartResult, Part) :: :ok
   def insert_part_result(%PartResult{} = part_result, %Part{} = old_part) do
-    change = Part.changeset(old_part, Map.from_struct(part_result))
-    Repo.insert_or_update(change)
+    changeset = parse_part_result(part_result, old_part.id)
+    IO.puts("#################")
+    IO.puts("parsed_octopart")
+    IO.inspect(changeset)
+    Repo.insert_or_update(changeset)
   end
 
   @spec search_octopart(%Part{octopart_id: nil}) :: {:ok, [PartResult]} | {:error, any}
@@ -75,152 +78,119 @@ defmodule Tory.Octopart do
     |> octopart_api_fetch(%{q: mpn, limit: limit})
   end
 
-  @spec parse_part_result(PartResult.t(), integer) :: Part.t()
+  @spec parse_part_result(PartResult.t(), integer) :: Repo.Changeset.t()
   def parse_part_result(
-        %PartResult{
-          id: octopart_id,
-          name: name,
-          mpn: mpn,
-          short_description: short_description,
-          aka_mpns: aka_mpns,
-          generic_mpn: generic_mpn,
-          avg_avail: avg_avail,
-          total_avail: total_avail,
-          slug: slug,
-          manufacturer_url: manufacturer_url,
-          octopart_url: octopart_url,
-          best_datasheet: %{url: datasheet},
-          best_image: %{url: image},
-          manufacturer: %PartResult.Company{} = company,
-          specs: specs
-        },
+        %PartResult{} = pr,
         part_id
       ) do
-    mpns = Enum.map(aka_mpns, &%{part_id: part_id, mpn: &1})
+    pr_map = PartResult.into_map(pr)
 
-    inspect(specs)
-    specs = parse_specs(specs, part_id)
+    attrs =
+      %{
+        id: octopart_id,
+        name: name,
+        mpn: mpn,
+        short_description: short_description,
+        aka_mpns: aka_mpns,
+        generic_mpn: generic_mpn,
+        avg_avail: avg_avail,
+        total_avail: total_avail,
+        slug: slug,
+        manufacturer_url: manufacturer_url,
+        octopart_url: octopart_url,
+        best_datasheet: %{url: datasheet},
+        best_image: %{url: image},
+        company: company,
+        specs: specs
+      } = pr_map
 
-    company = parse_company(company)
+    part = Tory.Part.get_part_preloaded!(part_id)
+    Part.changeset(part, attrs)
+    # mpns = Enum.map(aka_mpns, &%{part_id: part_id, mpn: &1})
 
-    part = %{
-      id: part_id,
-      octopart_id: octopart_id,
-      name: name,
-      short_description: short_description,
-      generic_mpn: generic_mpn,
-      mpn: mpn,
-      aka_mpns: mpns,
-      octopart_url: octopart_url,
-      manufacturer_url: manufacturer_url,
-      datasheet: datasheet,
-      image: image,
-      avg_avail: avg_avail,
-      total_avail: total_avail,
-      slug: slug,
-      specs: specs,
-      company: company
-    }
+    # specs = parse_specs(specs, part_id)
 
-    part
+    # part = %Part{
+    #  id: part_id,
+    #  octopart_id: octopart_id,
+    #  name: name,
+    #  short_description: short_description,
+    #  generic_mpn: generic_mpn,
+    #  mpn: mpn,
+    #  # aka_mpns: mpns,
+    #  octopart_url: octopart_url,
+    #  manufacturer_url: manufacturer_url,
+    #  datasheet: datasheet,
+    #  image: image,
+    #  avg_avail: avg_avail,
+    #  total_avail: total_avail,
+    #  slug: slug,
+    #  specs: parse_specs(specs, part_id),
+    #  company: company
+    # }
+
+    # part
   end
 
-  @spec parse_specs([PartResult.Spec.t()], integer) :: [Spec]
+  @spec parse_specs([map], integer) :: [Spec]
   def parse_specs(specs, part_id) do
-    Enum.map(
-      specs,
-      fn %{attribute: a} = s ->
-        import Ecto.Query
+    out =
+      Enum.map(
+        specs,
+        fn %{attribute: a} = s ->
+          import Ecto.Query
 
-        a? = Repo.get_by(Attribute, group: a.group, name: a.name, shortname: a.shortname)
+          a? = Repo.get_by(Attribute, group: a.group, name: a.name, shortname: a.shortname)
 
-        if not is_nil(a?) do
-          IO.inspect(a?.id)
+          if not is_nil(a?) do
+            IO.inspect(a?.id)
 
-          s? =
-            Repo.one(
-              from s in Spec,
-                join: ps in PartSpec,
-                on: ps.spec_id == s.id,
-                join: p in Part,
-                on: ps.part_id == p.id,
-                where:
-                  p.id == ^part_id and s.attribute_id == ^a?.id and
-                    s.display_value == ^s.display_value and
-                    s.value == ^s.value,
-                distinct: s.id,
-                select: s
-            )
+            s? =
+              Repo.one(
+                from s in Spec,
+                  join: ps in PartSpec,
+                  on: ps.spec_id == s.id,
+                  join: p in Part,
+                  on: ps.part_id == p.id,
+                  where:
+                    p.id == ^part_id and s.attribute_id == ^a?.id and
+                      s.display_value == ^s.display_value and
+                      s.value == ^s.value,
+                  distinct: s.id,
+                  select: s
+              )
 
-          IO.inspect(s?)
+            IO.inspect(s?)
 
-          if not is_nil(s?) do
-            %{
-              id: s?.id,
-              value: s.value,
-              units: s.units,
-              display_value: s.display_value,
-              attribute_id: a?.id
-            }
+            if not is_nil(s?) do
+              %Spec{
+                id: s?.id,
+                value: s.value,
+                units: s.units,
+                display_value: s.display_value,
+                attribute_id: a?.id
+              }
+            else
+              %Spec{
+                value: s.value,
+                units: s.units,
+                display_value: s.display_value,
+                attribute_id: a?.id
+              }
+            end
           else
-            %{
+            %Spec{
               value: s.value,
               units: s.units,
               display_value: s.display_value,
-              attribute_id: a?.id
+              attribute: a
             }
           end
-        else
-          %{
-            value: s.value,
-            units: s.units,
-            display_value: s.display_value,
-            attribute: a
-          }
         end
-      end
-    )
-  end
+      )
 
-  def parse_company(%PartResult.Company{aliases: aliases} = company) do
-    aliases =
-      Enum.map(aliases, fn a ->
-        IO.inspect(a)
-        a? = Repo.get_by(CompanyAlias, alias: a)
-
-        if not is_nil(a?) do
-          %{alias: a, id: a?.id}
-        else
-          %{alias: a}
-        end
-      end)
-
-    c? = Repo.get_by(Company, name: company.name)
-
-    if not is_nil(c?) do
-      %{
-        id: c?.id,
-        octopart_id: company.id,
-        name: company.name,
-        homepage_url: company.homepage_url,
-        is_verified: company.is_verified,
-        is_distributorapi: company.is_distributorapi,
-        display_flag: company.display_flag,
-        slug: company.slug,
-        aliases: aliases
-      }
-    else
-      %{
-        octopart_id: company.id,
-        name: company.name,
-        homepage_url: company.homepage_url,
-        is_verified: company.is_verified,
-        is_distributorapi: company.is_distributorapi,
-        display_flag: company.display_flag,
-        slug: company.slug,
-        aliases: aliases
-      }
-    end
+    IO.inspect(out, limit: :infinity)
+    out
   end
 
   def parse_octopart_part_query(
@@ -236,9 +206,9 @@ defmodule Tory.Octopart do
           slug: slug,
           manufacturer_url: manufacturer_url,
           octopart_url: octopart_url,
-          best_datasheet: %{url: datasheet},
-          best_image: %{url: image},
-          manufacturer: company,
+          datasheet: %{url: datasheet},
+          image: %{url: image},
+          company: company,
           specs: specs
         },
         part_id
@@ -258,9 +228,9 @@ defmodule Tory.Octopart do
               slug: slug,
               manufacturer_url: manufacturer_url,
               octopart_url: octopart_url,
-              best_datasheet: %{url: datasheet},
-              best_image: %{url: image},
-              manufacturer: company,
+              datasheet: %{url: datasheet},
+              image: %{url: image},
+              company: company,
               specs: specs
             }
           },

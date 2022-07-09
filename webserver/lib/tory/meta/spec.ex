@@ -17,9 +17,9 @@ defmodule Tory.Meta.Spec do
   end
 
   @doc false
-  def changeset(spec, attrs) do
+  def changeset(spec, attrs \\ %{}) do
     spec
-    |> cast(attrs, [:units, :value, :display_value, :attribute_id])
+    |> cast(attrs, [:units, :value, :display_value])
     |> cast_assoc(:attribute)
   end
 end

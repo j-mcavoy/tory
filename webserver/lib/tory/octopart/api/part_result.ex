@@ -1,4 +1,6 @@
 defmodule Tory.Octopart.Api.PartResult do
+  alias __MODULE__.{Spec, Spec.Attribute, Company}
+
   defstruct([
     :id,
     :name,
@@ -11,16 +13,14 @@ defmodule Tory.Octopart.Api.PartResult do
     :slug,
     :manufacturer_url,
     :octopart_url,
-    :best_datasheet,
-    :best_image,
-    :manufacturer,
+    :datasheet,
+    :image,
+    :company,
     :specs
   ])
 
-  alias __MODULE__.{Spec, Spec.Attribute, Company}
-
   @type t :: %__MODULE__{
-          id: integer,
+          id: String.t(),
           name: String.t(),
           mpn: String.t(),
           short_description: String.t(),
@@ -31,13 +31,24 @@ defmodule Tory.Octopart.Api.PartResult do
           slug: String.t(),
           manufacturer_url: String.t(),
           octopart_url: String.t(),
-          best_datasheet: String.t(),
-          best_image: String.t(),
-          manufacturer: Company.t(),
+          datasheet: %{url: String.t()},
+          image: %{url: String.t()},
+          company: Company.t(),
           specs: [Spec.t()]
         }
 
+  @spec into_map(PartResult.t()) :: map()
+  def into_map(%__MODULE__{} = pr) do
+    %{
+      Map.from_struct(pr)
+      | company: Company.into_map(pr.company),
+        specs: Enum.map(pr.specs, &Spec.into_map(&1))
+    }
+  end
+
   defmodule __MODULE__.Company do
+    alias __MODULE__.Alias
+
     defstruct [
       :id,
       :name,
@@ -50,15 +61,31 @@ defmodule Tory.Octopart.Api.PartResult do
     ]
 
     @type t :: %__MODULE__{
-            id: integer,
+            id: String.t(),
             name: String.t(),
             homepage_url: String.t(),
             is_verified: boolean,
             is_distributorapi: boolean,
             display_flag: String.t(),
             slug: String.t(),
-            aliases: [String.t()]
+            aliases: [Alias.t()]
           }
+    @spec into_map(__MODULE__.t()) :: map()
+    def into_map(%__MODULE__{} = c),
+      do: %{Map.from_struct(c) | aliases: Enum.map(c.aliases, &Alias.into_map/1)}
+
+    defmodule __MODULE__.Alias do
+      defstruct [
+        :alias
+      ]
+
+      @type t :: %__MODULE__{
+              alias: String.t()
+            }
+
+      @spec into_map(__MODULE__.t()) :: map()
+      def into_map(%__MODULE__{} = a), do: Map.from_struct(a)
+    end
   end
 
   defmodule __MODULE__.Spec do
@@ -72,6 +99,11 @@ defmodule Tory.Octopart.Api.PartResult do
             attribute: Attribute.t()
           }
 
+    @spec into_map(__MODULE__.t()) :: map()
+    def into_map(%Spec{} = s) do
+      %{Map.from_struct(s) | attribute: Attribute.into_map(s.attribute)}
+    end
+
     defmodule __MODULE__.Attribute do
       defstruct [:name, :shortname, :group]
 
@@ -80,6 +112,8 @@ defmodule Tory.Octopart.Api.PartResult do
               shortname: String.t(),
               group: String.t()
             }
+      @spec into_map(__MODULE__.t()) :: map()
+      def into_map(%__MODULE__{} = a), do: Map.from_struct(a)
     end
   end
 end

@@ -1,0 +1,15 @@
+<table>
+  <%= with {:ok, results} <- @octopart_search_results do %>
+    <%= for row <- results do %>
+      <tr>
+        <td><img src={row.image} /></td>
+        <td><%= link row.name, to: row.octopart_url %></td>
+        <td><%= link row.mpn, to: row.octopart_url %></td>
+        <td><%= row.short_description %></td>
+        <td><%= row.manufacturer.name %></td>
+        <td><%= link "datasheet", to: row.datasheet %></td>
+        <td><%= link "Populate this Part", to: "#", phx_click: "populate", phx_value_part_id: @part_id, phx_value_octopart_id: row.id %></td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>

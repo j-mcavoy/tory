@@ -12,6 +12,18 @@
     />
   </.modal>
 <% end %>
+<%= if @live_action in [:octopart_search] do %>
+  <.modal return_to={Routes.part_index_path(@socket, :octopart_search)}>
+    <.live_component
+      module={ToryWeb.PartLive.OctopartSearch}
+      id={@part.id}
+      title={@page_title}
+      action={@live_action}
+      part={@part}
+      return_to={Routes.part_index_path(@socket, :edit)}
+    />
+  </.modal>
+<% end %>
 
 <table>
   <thead>
@@ -38,8 +50,8 @@
         <td>
           <span><%= live_redirect "Show", to: Routes.part_show_path(@socket, :show, part) %></span>
           <span><%= live_patch "Edit", to: Routes.part_index_path(@socket, :edit, part) %></span>
+          <span><%= live_redirect "Search Octopart", to: Routes.part_octopart_search_path(@socket, :octopart_search, part) %></span>
           <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: part.id, data: [confirm: "Are you sure?"] %></span>
-          <span><button phx-click="populate_octopart" phx-value-part_id={part.id}>Populate from Octopart</button></span>
         </td>
       </tr>
     <% end %>
