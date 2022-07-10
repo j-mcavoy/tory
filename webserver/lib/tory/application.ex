@@ -20,6 +20,18 @@ defmodule Tory.Application do
       # {Tory.Worker, arg}
     ]
 
+    # setup Cachex cache
+    require Cachex
+
+    IO.puts("Starting Cachex cache")
+
+    Cachex.start(Tory.Octopart.Api.octopart_api_queries_cache())
+
+    Cachex.load(
+      Tory.Octopart.Api.octopart_api_queries_cache(),
+      "priv/cache/octopart_api_queries"
+    )
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Tory.Supervisor]
