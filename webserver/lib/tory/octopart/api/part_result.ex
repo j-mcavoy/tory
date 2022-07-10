@@ -90,9 +90,10 @@ defmodule Tory.Octopart.Api.PartResult do
 
   defmodule __MODULE__.Spec do
     alias __MODULE__.Attribute
-    defstruct [:display_value, :units, :value, :attribute]
+    defstruct [:id, :display_value, :units, :value, :attribute]
 
     @type t :: %__MODULE__{
+            id: integer(),
             display_value: String.t(),
             units: String.t(),
             value: String.t(),

@@ -5,6 +5,8 @@ defmodule Tory.Octopart.Api do
   alias Tory.Octopart.Api.PartResult.Spec.Attribute
   def octopart_token, do: System.get_env("OCTOPART_APIKEY")
 
+  def octopart_api_queries_cache, do: :octopart_api_queries
+
   @octopart_endpoint 'https://octopart.com/api/v4/endpoint'
   @type search_response :: %{body: %{data: %{search: %{results: [PartResult.t()]}}}}
   @type parts_response :: %{body: %{data: %{parts: [PartResult.t()]}}}
@@ -12,20 +14,37 @@ defmodule Tory.Octopart.Api do
 
   @spec octopart_api_fetch(String.t(), map()) :: {:ok, [PartResult]} | {:error, any}
   def octopart_api_fetch(query, %{} = vars) do
-    Neuron.Config.set(parse_options: [keys: :atoms])
+    require Cachex
 
-    with {:ok, resp} <-
-           Neuron.query(
-             query,
-             vars,
-             url: @octopart_endpoint,
-             headers: [token: octopart_token()]
-           ) do
-      require IEx
-      pr = parse_octopart_json(%{body: resp.body})
-      {:ok, parse_part_results(pr)}
-    else
-      {:error, e} -> {:error, e}
+    key = %{query: query, vars: vars}
+
+    case Cachex.get(octopart_api_queries_cache(), key) do
+      {:ok, nil} ->
+        Neuron.Config.set(parse_options: [keys: :atoms])
+
+        with {:ok, resp} <-
+               Neuron.query(
+                 query,
+                 vars,
+                 url: @octopart_endpoint,
+                 headers: [token: octopart_token()]
+               ) do
+          pr = parse_octopart_json(%{body: resp.body})
+          results = parse_part_results(pr)
+          {:ok, _} = Cachex.put(octopart_api_queries_cache(), key, results)
+
+          {:ok, _} = Cachex.dump(octopart_api_queries_cache(), "priv/cache/octopart_api_queries")
+
+          {:ok, results}
+        else
+          {:error, e} -> {:error, e}
+        end
+
+      {:ok, results} ->
+        {:ok, results}
+
+      _ ->
+        {:error, nil}
     end
   end
 
