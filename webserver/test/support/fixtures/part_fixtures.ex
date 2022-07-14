@@ -11,7 +11,7 @@ defmodule Tory.PartFixtures do
     {:ok, part} =
       attrs
       |> Enum.into(%{
-        mpn: "some mpn"
+        mpn: "555"
       })
       |> Tory.Part.create_part()
 

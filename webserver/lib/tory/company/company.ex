@@ -31,13 +31,4 @@ defmodule Tory.Company.Company do
     |> cast_assoc(:aliases)
     |> validate_required(:name)
   end
-
-  defp get_or_insert_aliases(%{company: %{aliases: aliases}}),
-    do: Enum.map(aliases, &get_or_insert_alias(&1))
-
-  defp get_or_insert_alias(%{alias: alias_name} = alias) do
-    Repo.get_by(CompanyAlias, alias: alias_name) ||
-      CompanyAlias.changeset(%CompanyAlias{}, alias)
-      |> Repo.insert_or_update()
-  end
 end

@@ -7,7 +7,7 @@ defmodule Tory.Inventory.Location do
   schema "locations" do
     field :description, :string
     field :name, :string
-    has_many :inventories, Inventory
+    has_many :inventories, Inventory, on_replace: :mark_as_invalid, on_delete: :delete_all
 
     timestamps()
   end

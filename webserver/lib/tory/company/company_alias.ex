@@ -7,12 +7,10 @@ defmodule Tory.Company.CompanyAlias do
   schema "company_aliases" do
     field :alias, :string
 
-    belongs_to :company, Company
+    belongs_to :company, Company, on_replace: :delete
 
     timestamps()
   end
-
-  #  def changeset([company_alias], attrs), do: Enum.map(company_alias, &changeset(&1, attrs))
 
   def changeset(company_alias, attrs) do
     company_alias

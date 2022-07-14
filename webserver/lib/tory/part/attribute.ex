@@ -1,4 +1,4 @@
-defmodule Tory.Meta.Attribute do
+defmodule Tory.Part.Attribute do
   use Ecto.Schema
   import Ecto.Changeset
 

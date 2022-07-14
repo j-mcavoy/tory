@@ -1,8 +1,8 @@
-defmodule Tory.Meta.Spec do
+defmodule Tory.Part.Spec do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Tory.Meta.Attribute
+  alias Tory.Part.Attribute
   alias Tory.Part.{Part, PartSpec}
 
   schema "specs" do
@@ -10,8 +10,8 @@ defmodule Tory.Meta.Spec do
     field(:units, :string)
     field(:display_value, :string)
 
-    has_one :attribute, Attribute
-    belongs_to :part, Part
+    has_one :attribute, Attribute, on_replace: :delete
+    belongs_to :part, Part, on_replace: :delete
 
     timestamps()
   end

@@ -2,20 +2,17 @@ defmodule Tory.Octopart do
   import NexarApi
 
   alias Neuron
-  alias Tory.Company.Company
-  alias Tory.Company.CompanyAlias
-  alias Tory.Meta.{Attribute, Spec}
-  alias Tory.Octopart.Api.PartResult
-  alias Tory.Part.{Part, PartSpec}
 
   alias Tory.Repo
+  alias Tory.Part
+  alias Tory.Part.Part, as: P
 
-  def update_part_from_octopart(%Part{} = part) do
+  def update_part_from_octopart(%P{} = part) do
     result = hd(search_octopart(part))
     update_part_from_octopart(part, result)
   end
 
-  def update_part_from_octopart(%Part{} = part, %{} = result) do
+  def update_part_from_octopart(%P{} = part, %{} = result) do
     change =
       Part.changeset(part, result)
       |> Ecto.Changeset.foreign_key_constraint(:spec, name: :attributes_spec_id_fkey)
@@ -24,9 +21,9 @@ defmodule Tory.Octopart do
     Tory.Part.get_part_preloaded!(part.id)
   end
 
-  def search_octopart(%Part{} = part), do: search_octopart(part, 1)
+  def search_octopart(%P{} = part), do: search_octopart(part, 1)
 
-  def search_octopart(%Part{octopart_id: nil, mpn: mpn}, limit) when limit > 0 do
+  def search_octopart(%P{octopart_id: nil, mpn: mpn}, limit) when limit > 0 do
     resp =
       """
       query PartSearch($q: String!, $limit: Int!) {
@@ -58,7 +55,7 @@ defmodule Tory.Octopart do
     Enum.map(raw_results, & &1.part) |> rename_raw_results
   end
 
-  def search_octopart(%Part{octopart_id: octopart_id}, _limit) do
+  def search_octopart(%P{octopart_id: octopart_id}, _limit) do
     resp =
       """
       query PartSearch($id: String!) {

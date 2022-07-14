@@ -5,7 +5,7 @@ defmodule Tory.Part.Part do
 
   alias Tory.Inventory.Inventory
   alias Tory.Company.Company
-  alias Tory.Meta.Spec
+  alias Tory.Part.Spec
 
   schema "parts" do
     field(:mpn, :string)
@@ -27,8 +27,8 @@ defmodule Tory.Part.Part do
     field(:barcode, :string)
 
     belongs_to :company, Company, on_replace: :update
-    has_many :inventories, Inventory
-    has_many :specs, Spec, on_replace: :delete
+    has_many :inventories, Inventory, on_replace: :delete, on_delete: :delete_all
+    has_many :specs, Spec, on_replace: :delete, on_delete: :delete_all
 
     timestamps()
   end
