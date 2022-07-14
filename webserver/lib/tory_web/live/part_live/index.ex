@@ -14,14 +14,6 @@ defmodule ToryWeb.PartLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  # def handle_event("octopart_search", %{"part" => part}, socket) do
-  #   import Tory.Octopart
-  #   IO.puts("octopart search")
-  #   IO.inspect(part.id)
-
-  #   {:noreply, assign(socket, action, :octopart_search)}
-  # end
-
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     part = Part.get_part!(id)
