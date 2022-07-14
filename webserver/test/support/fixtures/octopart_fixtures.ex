@@ -8,15 +8,12 @@ defmodule Tory.OctopartFixtures do
     %PartResult{
       aka_mpns: ["1N914T50A", "1N914_T50A"],
       avg_avail: 7945,
-      best_datasheet: %{
-        url: "http://datasheet.octopart.com/1N914-T50A-ON-Semiconductor-datasheet-87793896.pdf"
-      },
-      best_image: %{
-        url: "https://sigma.octopart.com/146361809/image/ON-Semiconductor-1N914-T50A.jpg"
-      },
+      datasheet:
+        "http://datasheet.octopart.com/1N914-T50A-ON-Semiconductor-datasheet-87793896.pdf",
+      image: "https://sigma.octopart.com/146361809/image/ON-Semiconductor-1N914-T50A.jpg",
       generic_mpn: "1N914",
       id: "84602646",
-      manufacturer: %Company{
+      company: %Company{
         aliases: [
           "ON Semiconductor",
           "ONS",

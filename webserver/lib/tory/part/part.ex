@@ -6,7 +6,6 @@ defmodule Tory.Part.Part do
   alias Tory.Inventory.Inventory
   alias Tory.Company.Company
   alias Tory.Meta.Spec
-  alias Tory.Part.PartSpec
 
   schema "parts" do
     field(:mpn, :string)
@@ -29,15 +28,13 @@ defmodule Tory.Part.Part do
 
     belongs_to :company, Company, on_replace: :update
     has_many :inventories, Inventory
-    many_to_many :specs, Spec, join_through: PartSpec, on_replace: :delete
+    has_many :specs, Spec, on_replace: :delete
 
     timestamps()
   end
 
   @doc false
   def changeset(part, attrs \\ %{}) do
-    IO.inspect(attrs)
-
     part
     |> cast(
       attrs,

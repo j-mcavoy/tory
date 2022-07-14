@@ -59,9 +59,17 @@ defmodule Tory.OctopartTest do
     @tag insert: true
     @tag api: true
     test "insert part_result" do
-      part = Tory.PartFixtures.part_fixture() |> Repo.prel()
+      part = Tory.PartFixtures.part_fixture()
       {:ok, [result | _]} = search_octopart(part, 1)
       insert_part_result(result, part)
     end
+  end
+
+  describe "ParseResult into_map should strip all nested structs in part result" do
+    pr = Tory.PartResultFixtures.part_result_fixture()
+    pr_map = PartResult.into_map(pr)
+    expected = Tory.PartResultFixtures.part_result_map_fixture()
+    IO.inspect(MapDiff.diff(pr_map, expected), limit: :infinity)
+    assert pr_map == expected
   end
 end

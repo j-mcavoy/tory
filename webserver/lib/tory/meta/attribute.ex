@@ -9,7 +9,7 @@ defmodule Tory.Meta.Attribute do
     field(:shortname, :string)
     field(:group, :string)
 
-    has_many(:specs, Spec)
+    belongs_to(:spec, Spec, on_replace: :delete)
 
     timestamps()
   end
@@ -21,7 +21,6 @@ defmodule Tory.Meta.Attribute do
 
     attribute
     |> cast(attrs, ~w(name shortname group)a)
-    |> unique_constraint(~w(name shortname group)a)
-    |> validate_required([:name])
+    |> cast_assoc(:spec)
   end
 end

@@ -52,7 +52,8 @@ defmodule Tory.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:neuron, "~> 5.0.0"},
-      {:cachex, "~> 3.4.0"}
+      {:cachex, "~> 3.4.0"},
+      {:nexar_api, git: "https://gitlab.com/j-mcavoy/nexar_api.git"}
     ]
   end
 

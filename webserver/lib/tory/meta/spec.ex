@@ -10,8 +10,8 @@ defmodule Tory.Meta.Spec do
     field(:units, :string)
     field(:display_value, :string)
 
-    belongs_to :attribute, Attribute, on_replace: :update
-    many_to_many :parts, Part, join_through: PartSpec, on_replace: :delete
+    has_one :attribute, Attribute
+    belongs_to :part, Part
 
     timestamps()
   end
@@ -20,6 +20,7 @@ defmodule Tory.Meta.Spec do
   def changeset(spec, attrs \\ %{}) do
     spec
     |> cast(attrs, [:units, :value, :display_value])
+    |> cast_assoc(:part)
     |> cast_assoc(:attribute)
   end
 end

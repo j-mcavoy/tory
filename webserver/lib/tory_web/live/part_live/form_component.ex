@@ -10,7 +10,6 @@ defmodule ToryWeb.PartLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:octopart_search_results, assigns.octopart_search_results || nil)
      |> assign(:changeset, changeset)}
   end
 

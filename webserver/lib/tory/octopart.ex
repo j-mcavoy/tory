@@ -1,5 +1,5 @@
 defmodule Tory.Octopart do
-  import Tory.Octopart.Api
+  import NexarApi
 
   alias Neuron
   alias Tory.Company.Company
@@ -9,231 +9,124 @@ defmodule Tory.Octopart do
   alias Tory.Part.{Part, PartSpec}
 
   alias Tory.Repo
-  @spec insert_part_result(PartResult, Part) :: :ok
-  def insert_part_result(%PartResult{} = part_result, %Part{} = old_part) do
-    changeset = parse_part_result(part_result, old_part.id)
-    IO.puts("#################")
-    IO.puts("parsed_octopart")
-    IO.inspect(changeset)
-    Repo.insert_or_update(changeset)
+
+  def update_part_from_octopart(%Part{} = part) do
+    result = hd(search_octopart(part))
+    update_part_from_octopart(part, result)
   end
 
-  @spec search_octopart(%Part{octopart_id: nil}) :: {:ok, [PartResult]} | {:error, any}
-  def search_octopart(%Part{octopart_id: nil, mpn: _mpn} = part), do: search_octopart(part, 1)
+  def update_part_from_octopart(%Part{} = part, %{} = result) do
+    change =
+      Part.changeset(part, result)
+      |> Ecto.Changeset.foreign_key_constraint(:spec, name: :attributes_spec_id_fkey)
 
-  @spec search_octopart(Part) :: {:ok, [PartResult]} | {:error, any}
-  def search_octopart(%Part{octopart_id: octopart_id}) do
-    """
-      query($id: String!) {
-        parts(ids: [$id]) {
-          avg_avail
-          total_avail
-          estimated_factory_lead_days
-          free_sample_url
-          id
-          mpn
-          slug
-          name
-          short_description
-          aka_mpns
-          generic_mpn
-          manufacturer_url
-          octopart_url
-          best_datasheet { url }
-          best_image { url }
-          manufacturer { id name homepage_url is_verified is_distributorapi display_flag slug aliases }
-          specs { display_value units value attribute { name shortname group } }
-    } }
-    """
-    |> octopart_api_fetch(%{id: octopart_id})
+    Repo.insert_or_update(change)
+    Tory.Part.get_part_preloaded!(part.id)
   end
 
-  @spec search_octopart(%Part{octopart_id: nil, mpn: String.t()}, integer) ::
-          {:ok, [PartResult]} | {:error, any}
+  def search_octopart(%Part{} = part), do: search_octopart(part, 1)
+
   def search_octopart(%Part{octopart_id: nil, mpn: mpn}, limit) when limit > 0 do
-    """
-    query($q: String, $limit: Int) {
-      search(q: $q, limit: $limit) {
-        results {
-          part {
-            avg_avail
-            total_avail
-            estimated_factory_lead_days
-            free_sample_url
-            id
-            mpn
-            slug
-            name
-            short_description
-            aka_mpns
-            generic_mpn
-            manufacturer_url
-            octopart_url
-            best_datasheet { url }
-            best_image { url }
-            manufacturer { id name homepage_url is_verified is_distributorapi display_flag slug aliases}
-            specs { display_value units value attribute {name shortname group} }
-    } } } }
-    """
-    |> octopart_api_fetch(%{q: mpn, limit: limit})
+    resp =
+      """
+      query PartSearch($q: String!, $limit: Int!) {
+      supSearchMpn(q: $q, limit: $limit){
+      results{
+        part{
+          id
+          name
+          mpn
+          genericMpn
+          manufacturer { id name homepageUrl isVerified isDistributorApi displayFlag slug aliases }
+          manufacturerUrl
+          shortDescription
+          specs { displayValue units value attribute { name shortname group } }
+          slug
+          octopartUrl
+          bestImage { url }
+          bestDatasheet { url }
+          totalAvail
+          avgAvail
+          estimatedFactoryLeadDays
+          freeSampleUrl
+          akaMpns
+      } } } }
+      """
+      |> query(%{q: mpn, limit: limit})
+
+    {:ok, %{body: %{data: %{supSearchMpn: %{results: raw_results}}}}} = resp
+    Enum.map(raw_results, & &1.part) |> rename_raw_results
   end
 
-  @spec parse_part_result(PartResult.t(), integer) :: Repo.Changeset.t()
-  def parse_part_result(
-        %PartResult{} = pr,
-        part_id
-      ) do
-    pr_map = PartResult.into_map(pr)
+  def search_octopart(%Part{octopart_id: octopart_id}, _limit) do
+    resp =
+      """
+      query PartSearch($id: String!) {
+      supParts(ids: [$id]){
+          id
+          name
+          mpn
+          genericMpn
+          manufacturer { id name homepageUrl isVerified isDistributorApi displayFlag slug aliases }
+          manufacturerUrl
+          shortDescription
+          specs { displayValue units value attribute { name shortname group } }
+          slug
+          octopartUrl
+          bestImage { url }
+          bestDatasheet { url }
+          totalAvail
+          avgAvail
+          estimatedFactoryLeadDays
+          freeSampleUrl
+          akaMpns
+      } }
+      """
+      |> query(%{id: octopart_id})
 
-    attrs =
+    {:ok, %{body: %{data: %{supParts: raw_results}}}} = resp
+    rename_raw_results(raw_results)
+  end
+
+  defp rename_raw_results(raw_results) do
+    for r <- raw_results do
       %{
-        id: octopart_id,
-        name: name,
-        mpn: mpn,
-        short_description: short_description,
-        aka_mpns: aka_mpns,
-        generic_mpn: generic_mpn,
-        avg_avail: avg_avail,
-        total_avail: total_avail,
-        slug: slug,
-        manufacturer_url: manufacturer_url,
-        octopart_url: octopart_url,
-        best_datasheet: %{url: datasheet},
-        best_image: %{url: image},
-        company: company,
-        specs: specs
-      } = pr_map
-
-    part = Tory.Part.get_part_preloaded!(part_id)
-    Part.changeset(part, attrs)
-    # mpns = Enum.map(aka_mpns, &%{part_id: part_id, mpn: &1})
-
-    # specs = parse_specs(specs, part_id)
-
-    # part = %Part{
-    #  id: part_id,
-    #  octopart_id: octopart_id,
-    #  name: name,
-    #  short_description: short_description,
-    #  generic_mpn: generic_mpn,
-    #  mpn: mpn,
-    #  # aka_mpns: mpns,
-    #  octopart_url: octopart_url,
-    #  manufacturer_url: manufacturer_url,
-    #  datasheet: datasheet,
-    #  image: image,
-    #  avg_avail: avg_avail,
-    #  total_avail: total_avail,
-    #  slug: slug,
-    #  specs: parse_specs(specs, part_id),
-    #  company: company
-    # }
-
-    # part
-  end
-
-  @spec parse_specs([map], integer) :: [Spec]
-  def parse_specs(specs, part_id) do
-    out =
-      Enum.map(
-        specs,
-        fn %{attribute: a} = s ->
-          import Ecto.Query
-
-          a? = Repo.get_by(Attribute, group: a.group, name: a.name, shortname: a.shortname)
-
-          if not is_nil(a?) do
-            IO.inspect(a?.id)
-
-            s? =
-              Repo.one(
-                from s in Spec,
-                  join: ps in PartSpec,
-                  on: ps.spec_id == s.id,
-                  join: p in Part,
-                  on: ps.part_id == p.id,
-                  where:
-                    p.id == ^part_id and s.attribute_id == ^a?.id and
-                      s.display_value == ^s.display_value and
-                      s.value == ^s.value,
-                  distinct: s.id,
-                  select: s
-              )
-
-            IO.inspect(s?)
-
-            if not is_nil(s?) do
-              %Spec{
-                id: s?.id,
-                value: s.value,
-                units: s.units,
-                display_value: s.display_value,
-                attribute_id: a?.id
-              }
-            else
-              %Spec{
-                value: s.value,
-                units: s.units,
-                display_value: s.display_value,
-                attribute_id: a?.id
-              }
-            end
-          else
-            %Spec{
-              value: s.value,
-              units: s.units,
-              display_value: s.display_value,
-              attribute: a
-            }
-          end
-        end
-      )
-
-    IO.inspect(out, limit: :infinity)
-    out
-  end
-
-  def parse_octopart_part_query(
-        %{
-          id: octopart_id,
-          name: name,
-          mpn: mpn,
-          short_description: short_description,
-          aka_mpns: aka_mpns,
-          generic_mpn: generic_mpn,
-          avg_avail: avg_avail,
-          total_avail: total_avail,
-          slug: slug,
-          manufacturer_url: manufacturer_url,
-          octopart_url: octopart_url,
-          datasheet: %{url: datasheet},
-          image: %{url: image},
-          company: company,
-          specs: specs
+        octopart_id: r.id,
+        name: r.name,
+        mpn: r.mpn,
+        generic_mpn: r.genericMpn,
+        company: %{
+          octopart_id: r.manufacturer.id,
+          name: r.manufacturer.name,
+          homepage_url: r.manufacturer.homepageUrl,
+          is_verified: r.manufacturer.isVerified,
+          is_distributorapi: r.manufacturer.isDistributorApi,
+          displayFlag: r.manufacturer.displayFlag,
+          slug: r.manufacturer.slug,
+          aliases: Enum.map(r.manufacturer.aliases, &%{alias: &1})
         },
-        part_id
-      ),
-      do:
-        parse_octopart_part_query(
-          %{
-            part: %{
-              id: octopart_id,
-              name: name,
-              mpn: mpn,
-              short_description: short_description,
-              aka_mpns: aka_mpns,
-              generic_mpn: generic_mpn,
-              avg_avail: avg_avail,
-              total_avail: total_avail,
-              slug: slug,
-              manufacturer_url: manufacturer_url,
-              octopart_url: octopart_url,
-              datasheet: %{url: datasheet},
-              image: %{url: image},
-              company: company,
-              specs: specs
+        manufacturer_url: r.manufacturerUrl,
+        short_description: r.shortDescription,
+        specs:
+          Enum.map(
+            r.specs,
+            &%{
+              display_value: &1.displayValue,
+              units: &1.units,
+              value: &1.value,
+              attribute: &1.attribute
             }
-          },
-          part_id
-        )
+          ),
+        slug: r.slug,
+        octopart_url: r.octopartUrl,
+        best_image: r.bestImage.url,
+        best_datasheet_: r.bestDatasheet.url,
+        total_avail: r.totalAvail,
+        avg_avail: r.avgAvail,
+        estimated_factory_lead_days: r.estimatedFactoryLeadDays,
+        free_sample_url: r.freeSampleUrl,
+        aka_mpns: r.akaMpns
+      }
+    end
+  end
 end
