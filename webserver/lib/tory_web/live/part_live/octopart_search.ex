@@ -25,10 +25,15 @@ defmodule ToryWeb.PartLive.OctopartSearch do
      |> assign(:page_title, "Octopart Search")}
   end
 
-  def handle_event("populate", %{"part-id" => part_id, "octopart-id" => octopart_id}, socket) do
+  @impl true
+  def handle_event(
+        "populate",
+        %{"part-id" => part_id, "octopart-id" => octopart_id},
+        socket
+      ) do
     part = Part.get_part_preloaded!(part_id)
-    {:ok, [part_result | _]} = Octopart.search_octopart(%P{part | octopart_id: octopart_id})
-    Octopart.insert_part_result(part_result, part)
+    [result | _] = Octopart.search_octopart(%{part | octopart_id: octopart_id})
+    Octopart.update_part_from_octopart(part, result)
     {:noreply, socket}
   end
 end

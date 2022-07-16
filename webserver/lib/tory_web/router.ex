@@ -18,10 +18,6 @@ defmodule ToryWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    resources "/parameters", ParameterController
-    # resources "/parts", PartController
-    # resources "/locations", LocationController
-    # resources "/inventories", InventoryController
 
     live("/partslive", PartLive)
 

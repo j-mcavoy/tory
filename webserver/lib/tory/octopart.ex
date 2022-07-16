@@ -3,6 +3,7 @@ defmodule Tory.Octopart do
 
   alias Neuron
 
+  alias Ecto
   alias Tory.Repo
   alias Tory.Part
   alias Tory.Part.Part, as: P
@@ -14,7 +15,7 @@ defmodule Tory.Octopart do
 
   def update_part_from_octopart(%P{} = part, %{} = result) do
     change =
-      Part.changeset(part, result)
+      P.changeset(part, result)
       |> Ecto.Changeset.foreign_key_constraint(:spec, name: :attributes_spec_id_fkey)
 
     Repo.insert_or_update(change)
@@ -116,8 +117,8 @@ defmodule Tory.Octopart do
           ),
         slug: r.slug,
         octopart_url: r.octopartUrl,
-        best_image: (not is_nil(r.bestImage) && r.bestImage.url) || nil,
-        best_datasheet: (not is_nil(r.bestDatasheet) && r.bestDatasheet.url) || nil,
+        image: (not is_nil(r.bestImage) && r.bestImage.url) || nil,
+        datasheet: (not is_nil(r.bestDatasheet) && r.bestDatasheet.url) || nil,
         total_avail: r.totalAvail,
         avg_avail: r.avgAvail,
         estimated_factory_lead_days: r.estimatedFactoryLeadDays,
