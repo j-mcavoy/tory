@@ -1,6 +1,7 @@
 defmodule ToryWeb.InventoryLive.Index do
   use ToryWeb, :live_view
 
+  alias Tory.Part
   alias Tory.Inventory
   alias Tory.Inventory.Inventory, as: I
 
@@ -37,6 +38,19 @@ defmodule ToryWeb.InventoryLive.Index do
     inventory = Inventory.get_inventory!(id)
     {:ok, _} = Inventory.delete_inventory(inventory)
 
+    {:noreply, assign(socket, :inventories, Inventory.list_inventories())}
+  end
+
+  @impl true
+  def handle_event("inc", %{"id" => id}, socket) do
+    IO.puts("incr")
+    Inventory.increment_inventory(id)
+    {:noreply, assign(socket, :inventories, Inventory.list_inventories())}
+  end
+
+  @impl true
+  def handle_event("dec", %{"id" => id}, socket) do
+    Inventory.decrement_inventory(id)
     {:noreply, assign(socket, :inventories, Inventory.list_inventories())}
   end
 

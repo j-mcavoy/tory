@@ -15,7 +15,9 @@ defmodule Tory.Inventory.Inventory do
   @doc false
   def changeset(inventory, attrs) do
     inventory
-    |> cast(attrs, [:count])
-    |> validate_required([:count])
+    |> cast(attrs, [:count, :part_id, :location_id])
+    |> validate_required([:count, :part_id, :location_id])
+    |> validate_number(:count, greater_than: -1)
+    |> unique_constraint([:part_id, :location_id])
   end
 end

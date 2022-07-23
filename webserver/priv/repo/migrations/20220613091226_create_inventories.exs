@@ -10,7 +10,6 @@ defmodule Tory.Repo.Migrations.CreateInventories do
       timestamps()
     end
 
-    create(index(:inventories, [:part_id]))
-    create(index(:inventories, [:location_id]))
+    unique_index(:inventories, [:part_id, :location_id])
   end
 end

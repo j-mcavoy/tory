@@ -18,7 +18,9 @@
     <tr>
       <th>Location</th>
       <th>Part</th>
+      <th>Description</th>
       <th>Count</th>
+      <th></th>
       <th></th>
     </tr>
   </thead>
@@ -27,8 +29,13 @@
       <tr id={"inventory-#{inventory.id}"}>
         <td><%= link inventory.location.name, to: Routes.location_show_path(@socket, :show, inventory.location)%></td>
         <td><%= link inventory.part.mpn, to: Routes.part_show_path(@socket, :show, inventory.part)%></td>
+        <td><%= inventory.part.short_description %></td>
         <td><%= inventory.count %></td>
 
+        <td>
+          <%= link "+", to: "#", phx_click: "inc", phx_value_id: inventory.id %>
+          <%= link "-", to: "#", phx_click: "dec", phx_value_id: inventory.id %>
+        </td>
         <td>
           <span><%= live_redirect "Show", to: Routes.inventory_show_path(@socket, :show, inventory) %></span>
           <span><%= live_patch "Edit", to: Routes.inventory_index_path(@socket, :edit, inventory) %></span>

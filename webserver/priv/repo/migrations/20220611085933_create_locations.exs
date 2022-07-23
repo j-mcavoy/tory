@@ -3,7 +3,7 @@ defmodule Tory.Repo.Migrations.CreateLocations do
 
   def change do
     create table(:locations) do
-      add(:name, :string)
+      add(:name, :string, null: false)
       add(:description, :string)
       add(:location, :string)
 

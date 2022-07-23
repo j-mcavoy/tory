@@ -75,4 +75,14 @@ defmodule Tory.Inventory do
   def change_inventory(%I{} = inventory, attrs \\ %{}) do
     I.changeset(inventory, attrs)
   end
+
+  def increment_inventory(id, amount \\ 1) do
+    inventory = get_inventory!(id)
+
+    inventory
+    |> I.changeset(%{count: inventory.count + amount})
+    |> Repo.update()
+  end
+
+  def decrement_inventory(id, amount \\ 1), do: increment_inventory(id, -amount)
 end
