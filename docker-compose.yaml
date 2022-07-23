@@ -7,7 +7,9 @@ services:
       PORT: ${HTTP_PORT}
       DATABASE_URL: postgres://postgres:${DB_PASSWORD}@db/tory
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
-      OCTOPART_APIKEY: ${OCTOPART_APIKEY}
+      NEXAR_APP_NAME: ${NEXAR_APP_NAME}
+      NEXAR_APP_CLIENT_ID: ${NEXAR_APP_CLIENT_ID}
+      NEXAR_APP_SECRET_ID: ${NEXAR_APP_SECRET_ID}
     image: johnemac36/tory_webserver
     build: webserver
     ports:
@@ -17,7 +19,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
-      - 5432:${DB_PORT}
+      - ${DB_PORT}:5432
 
 networks:
   default:
