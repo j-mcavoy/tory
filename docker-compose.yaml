@@ -18,6 +18,7 @@ services:
     build: db
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=tory
     ports:
       - ${DB_PORT}:5432
 
